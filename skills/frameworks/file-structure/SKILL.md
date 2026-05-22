@@ -39,3 +39,22 @@ class ProfilePage extends ConsumerStatefulWidget {}
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {}
 ```
+
+## React Exceptions
+
+Most project-owned React components should follow one component per file.
+
+Exception: shadcn/ui generated or copied components may keep their original file structure when preserving upstream compatibility or component composition is more useful than splitting.
+
+Do not split shadcn/ui files mechanically unless there is a clear maintainability benefit.
+
+## Intent
+
+Optimize for:
+
+- readability
+- grep/searchability
+- predictable navigation
+- smaller diffs
+- easier code review
+- lower merge conflict risk

@@ -69,8 +69,12 @@ Do not increase a deeply nested container's gap beyond its parent separation wit
 Spacing is responsive behavior, not a fixed screenshot value.
 
 - Support viewport widths down to `320px` by default unless the product explicitly defines a different minimum.
+- Treat `320px` as the minimum width for full layout quality and intentional visual fidelity.
 - Do not set a global `min-width: 320px` merely to hide overflow. The layout itself must reflow cleanly at `320px`.
-- Below the supported minimum, preserve access to content and avoid destructive clipping where practical, but do not distort the primary design to optimize for extremely narrow or embedded viewports unless required by the product.
+- At widths from `280px` to `319px`, require graceful degradation rather than full layout parity.
+- Graceful degradation below `320px` means content remains reachable, controls remain usable, text does not overlap, and nothing is destructively clipped. Pixel-perfect spacing and identical composition are not required.
+- Do not distort the primary design or add large amounts of complexity solely to optimize for widths below `320px` unless the product explicitly targets them.
+- Below `280px`, preserve access where practical, but no default layout-quality guarantee is required unless the product defines a narrower minimum.
 - Check intermediate widths, not only named framework breakpoints. Layout bugs often appear between presets.
 - Reduce outer page padding and high-level gaps before compressing tightly related controls or text.
 - Preserve gap hierarchy as spacing changes. Responsive compression should scale the hierarchy, not flatten every level to one identical gap.
@@ -82,7 +86,8 @@ Spacing is responsive behavior, not a fixed screenshot value.
 Recommended viewport checks:
 
 ```txt
-320px  minimum supported phone width
+280px  graceful-degradation smoke check
+320px  minimum fully supported phone width
 360px  common narrow Android width
 375px  common phone width
 390px  common modern phone width
@@ -174,14 +179,16 @@ Before completing any task that creates or modifies web UI layout:
 - [ ] For every remaining arbitrary spacing value, confirm it is a documented design requirement rather than compensation for broken structure.
 - [ ] Confirm parent containers own child alignment and spacing wherever practical.
 - [ ] Verify content growth does not break the layout.
-- [ ] Verify the layout at `320px` and every product-relevant viewport size.
+- [ ] Verify full layout quality at `320px` and every product-relevant viewport size.
+- [ ] Perform a graceful-degradation smoke check at `280px`.
+- [ ] Confirm widths from `280px` to `319px` keep content accessible, controls usable, and text free from destructive overlap or clipping.
 - [ ] Inspect intermediate widths between breakpoints for cramped, excessive, or abrupt spacing changes.
 - [ ] Verify long text, wrapping, localization, and browser text zoom do not create overlap or broken spacing.
 - [ ] Confirm ordinary page content has no unintended horizontal overflow.
 - [ ] Verify Safari and iOS Safari compatibility for the affected layout.
 - [ ] Refactor every spacing hack, broken spacing hierarchy, or responsive spacing defect discovered during verification before reporting the task complete.
 
-Do not report the task as complete while any checklist item fails. A layout that only works because of accumulated spacing offsets, flat hierarchy-less gaps, or breakpoint-only testing is not complete.
+Do not report the task as complete while any checklist item fails. A layout that only works because of accumulated spacing offsets, flat hierarchy-less gaps, breakpoint-only testing, or inaccessible narrow-width degradation is not complete.
 
 ## Intent
 
@@ -194,4 +201,5 @@ Optimize for:
 - clear visual and structural hierarchy
 - clear parent-child layout ownership
 - stable spacing across the full supported viewport range
+- graceful degradation below the full-support minimum
 - fidelity without pixel-hack accumulation

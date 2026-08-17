@@ -93,6 +93,12 @@ Or through a global `AGENTS.md` setup.
 - **[post-mortem](./skills/engineering/post-mortem/SKILL.md)** — Engineering-focused root cause writeup: mechanism, fix, validation, and why it slipped through.
 - **[scope-discipline](./skills/engineering/scope-discipline/SKILL.md)** — Keep implementation bounded to the requested outcome and avoid unrelated changes.
 - **[scrutinize](./skills/engineering/scrutinize/SKILL.md)** — End-to-end review of plans, PRs, and code changes with emphasis on simplicity, correctness, and real execution paths.
+- **[rubberduck](./skills/engineering/rubberduck/SKILL.md)** — Interactive reasoning mode that asks focused questions before touching code.
+- **[reviewer](./skills/engineering/reviewer/SKILL.md)** — Review-only mode for correctness, regression, maintainability, and scope issues.
+- **[minimalist](./skills/engineering/minimalist/SKILL.md)** — Prefer the smallest correct diff without adjacent cleanup or speculative abstraction.
+- **[skeptic](./skills/engineering/skeptic/SKILL.md)** — Treat proposed solutions as hypotheses and challenge assumptions with evidence.
+- **[archaeologist](./skills/engineering/archaeologist/SKILL.md)** — Investigate callers, history, contracts, and old constraints before changing legacy code.
+- **[paranoid](./skills/engineering/paranoid/SKILL.md)** — Aggressive pre-ship verification of edge cases, failure paths, races, compatibility, and test blind spots.
 
 ### Productivity
 
@@ -112,4 +118,4 @@ Or through a global `AGENTS.md` setup.
 
 ### Misc
 
-_(none yet)_
+- **[caveman](./skills/misc/caveman/SKILL.md)** — Keep engineering competent while narrating progress and results in compact caveman English.

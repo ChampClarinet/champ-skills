@@ -39,6 +39,18 @@ Only update `.claude-plugin/plugin.json` when explicitly working on Claude plugi
 
 Do not assume every active skill must be added to `.claude-plugin/plugin.json`.
 
+## Scope discipline
+
+When modifying code, configuration, documentation, or skills:
+
+- make the smallest change necessary to satisfy the explicit request
+- do not perform unrelated cleanup, refactoring, renaming, reformatting, modernization, or optimization
+- treat discovered issues as out of scope unless they block the requested work
+- finish the requested work first; offer worthwhile adjacent improvements afterward as optional follow-up work
+- never implement optional follow-up work until the user explicitly opts in
+- preserve existing behavior, APIs, dependencies, naming, and structure unless the requested outcome requires a change
+- use the scope-discipline skill to govern what may change; task-specific skills govern how in-scope work is implemented
+
 ## AI assistant behavior
 
 When changing skills:

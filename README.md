@@ -91,6 +91,7 @@ Or through a global `AGENTS.md` setup.
 
 - **[debug-mantra](./skills/engineering/debug-mantra/SKILL.md)** — Structured debugging workflow: reproduce → trace the fail path → falsify hypotheses → track breadcrumbs.
 - **[post-mortem](./skills/engineering/post-mortem/SKILL.md)** — Engineering-focused root cause writeup: mechanism, fix, validation, and why it slipped through.
+- **[scope-discipline](./skills/engineering/scope-discipline/SKILL.md)** — Keep implementation bounded to the requested outcome and avoid unrelated changes.
 - **[scrutinize](./skills/engineering/scrutinize/SKILL.md)** — End-to-end review of plans, PRs, and code changes with emphasis on simplicity, correctness, and real execution paths.
 
 ### Productivity

@@ -112,4 +112,4 @@ Or through a global `AGENTS.md` setup.
 
 ### Misc
 
-_(none yet)_
+- **[caveman](./skills/misc/caveman/SKILL.md)** — Keep engineering competent while narrating progress and results in compact caveman English.

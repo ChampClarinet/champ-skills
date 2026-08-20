@@ -29,25 +29,36 @@ A route, page, or layout may remain the single primary React component in its ow
 
 These naming rules apply to project-owned TypeScript and TSX files only. Do not copy this convention into Dart, Flutter, or unrelated languages unless that language's own conventions explicitly call for it.
 
-Use lowercase kebab-style names for the subject, and use `.` segments to express what the file is when that distinction improves navigation.
+Use lowercase `snake_case` for the subject name. Use `.` segments to express what the file is when that distinction improves navigation.
 
 Examples:
 
 ```txt
 stock.card.tsx
 stock.table.tsx
-create-stock.form.tsx
-create-stock.dialog.tsx
+create_stock.form.tsx
+create_stock.dialog.tsx
 borrow.dialog.tsx
 return.dialog.tsx
-summary-section.tsx
+summary_section.tsx
 ```
 
 The file name does not need to mirror the PascalCase React identifier literally. For example:
 
 ```txt
-stock.card.tsx        -> StockCard
-create-stock.form.tsx -> CreateStockForm
+stock.card.tsx         -> StockCard
+create_stock.form.tsx  -> CreateStockForm
+summary_section.tsx    -> SummarySection
+```
+
+Use underscores inside the subject when it contains multiple words, and reserve `.` for a meaningful role or artifact kind.
+
+For example:
+
+```txt
+create_stock.dialog.tsx
+stock_transaction.table.tsx
+employee_selector.form.tsx
 ```
 
 Use the dot segment for a meaningful role or artifact kind such as:
@@ -59,7 +70,23 @@ Use the dot segment for a meaningful role or artifact kind such as:
 - `.hook` only when that matches existing repository conventions
 - another clear domain-specific role when it makes the file easier to locate
 
-Do not force a dot suffix when the subject name is already clear. A name such as `summary-section.tsx` is valid when `summary-section` is itself the meaningful component name.
+Do not force a dot suffix when the subject name is already clear. A name such as `summary_section.tsx` is valid when `summary_section` is itself the meaningful component name.
+
+Avoid kebab-case component filenames such as:
+
+```txt
+create-stock.form.tsx
+summary-section.tsx
+stock-transaction.table.tsx
+```
+
+Prefer:
+
+```txt
+create_stock.form.tsx
+summary_section.tsx
+stock_transaction.table.tsx
+```
 
 Avoid vague names such as:
 
@@ -96,8 +123,8 @@ stock/
   index.tsx
   header.tsx
   stock.card.tsx
-  create-stock.dialog.tsx
-  create-stock.form.tsx
+  create_stock.dialog.tsx
+  create_stock.form.tsx
   stock.tab/
     index.tsx
     stock.table.tsx
@@ -187,7 +214,7 @@ Before completing any task that creates or modifies React or Flutter UI code:
 - [ ] Inspect every created or modified project-owned React/TSX and Flutter/Dart UI file.
 - [ ] Count every React function, class, arrow function, or variable used as a component, including non-exported and nested components.
 - [ ] Confirm that each project-owned React file contains exactly one React component.
-- [ ] For project-owned TypeScript/TSX files, confirm filenames follow the semantic lowercase subject + optional dot-role convention.
+- [ ] For project-owned TypeScript/TSX files, confirm filenames use lowercase `snake_case` subjects with optional dot-role segments.
 - [ ] Confirm each `index.ts` or `index.tsx` is a real logical-unit entrypoint rather than a habitual wrapper or dumping ground.
 - [ ] Confirm that each project-owned Flutter file contains exactly one widget, except for its single matching state class when applicable.
 - [ ] Confirm that every `StatefulWidget` and matching `State<T>` pair remains together in the same file.

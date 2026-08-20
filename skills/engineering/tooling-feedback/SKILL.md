@@ -59,19 +59,46 @@ Do not mechanically accept tooling suggestions when they:
 
 When the suggestion is ambiguous, verify against the active toolchain or framework documentation before changing behavior.
 
+## Safe suppression fallback
+
+If resolving a warning would change intended behavior, introduce meaningful regression risk, or require disproportionate refactoring, preserve the working behavior and suppress the diagnostic as narrowly as possible instead of forcing the suggested fix.
+
+Prefer, in order:
+
+1. fix the warning safely
+2. use the tool or library's canonical supported alternative
+3. suppress only the specific line, expression, or rule that cannot be fixed safely
+4. disable a rule more broadly only when explicitly requested or when the repository already documents that policy
+
+When suppressing a diagnostic:
+
+- use the smallest supported scope, preferably the next line or exact expression
+- name the exact rule or diagnostic identifier when the tool supports it
+- add a short reason when the intent is not obvious
+- preserve behavior intentionally; do not use suppression to avoid a safe straightforward fix
+- never disable an entire linter, checker, plugin, or ruleset just to silence one local warning
+
+For example, when a React hook dependency warning is intentionally not fixable without changing the effect's required lifecycle, prefer a targeted suppression such as:
+
+```ts
+// eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: effect must only run on mount
+```
+
+Do not convert a local exception into project-wide configuration churn.
+
 ## Validation
 
-After fixing a warning:
+After fixing or suppressing a warning:
 
 - re-run or re-check the narrowest relevant diagnostic source when practical
-- ensure the warning is gone
+- ensure the warning is gone or intentionally suppressed at the narrowest scope
 - ensure no new warning was introduced nearby
 - preserve the requested behavior
 
 ## Interaction with other skills
 
 - `scope-discipline` limits cleanup to the requested and touched surface.
-- `minimalist` favors the smallest safe warning fix.
+- `minimalist` favors the smallest safe warning fix or suppression.
 - framework-specific skills decide the idiomatic replacement when tooling feedback is framework-specific.
 
 Tooling feedback should improve touched code without silently expanding the task.

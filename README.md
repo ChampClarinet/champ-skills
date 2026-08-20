@@ -92,6 +92,8 @@ Or through a global `AGENTS.md` setup.
 - **[debug-mantra](./skills/engineering/debug-mantra/SKILL.md)** — Structured debugging workflow: reproduce → trace the fail path → falsify hypotheses → track breadcrumbs.
 - **[post-mortem](./skills/engineering/post-mortem/SKILL.md)** — Engineering-focused root cause writeup: mechanism, fix, validation, and why it slipped through.
 - **[scope-discipline](./skills/engineering/scope-discipline/SKILL.md)** — Keep implementation bounded to the requested outcome and avoid unrelated changes.
+- **[ownership-boundaries](./skills/engineering/ownership-boundaries/SKILL.md)** — Keep state, side effects, data access, dependencies, and behavior at the narrowest meaningful owner.
+- **[tooling-feedback](./skills/engineering/tooling-feedback/SKILL.md)** — Treat actionable compiler, linter, language-server, and framework diagnostics on touched code as implementation feedback.
 - **[scrutinize](./skills/engineering/scrutinize/SKILL.md)** — End-to-end review of plans, PRs, and code changes with emphasis on simplicity, correctness, and real execution paths.
 - **[rubberduck](./skills/engineering/rubberduck/SKILL.md)** — Interactive reasoning mode that asks focused questions before touching code.
 - **[reviewer](./skills/engineering/reviewer/SKILL.md)** — Review-only mode for correctness, regression, maintainability, and scope issues.
@@ -107,6 +109,7 @@ Or through a global `AGENTS.md` setup.
 ### Frameworks
 
 - **[file-structure](./skills/frameworks/file-structure/SKILL.md)** — File organization rules for maintainable component and class structure.
+- **[react-component-ownership](./skills/frameworks/react-component-ownership/SKILL.md)** — Apply ownership-boundary principles to React state, effects, queries, dialogs, tabs, forms, and component composition.
 
 ### Personal
 

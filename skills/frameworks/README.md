@@ -25,3 +25,4 @@ Framework skills should:
 ## Skills
 
 - **[file-structure](./file-structure/SKILL.md)** — File organization rules for maintainable component and class structure.
+- **[react-component-ownership](./react-component-ownership/SKILL.md)** — Apply ownership-boundary principles to React state, effects, queries, dialogs, tabs, forms, and component composition.

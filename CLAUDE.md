@@ -51,6 +51,21 @@ When modifying code, configuration, documentation, or skills:
 - preserve existing behavior, APIs, dependencies, naming, and structure unless the requested outcome requires a change
 - use the scope-discipline skill to govern what may change; task-specific skills govern how in-scope work is implemented
 
+## Skill routing and composition
+
+Skills may compose. Do not choose only one skill when multiple skills govern orthogonal parts of the task.
+
+When implementing or refactoring code:
+
+- always apply `scope-discipline` to determine what may change
+- apply `ownership-boundaries` when the task involves decomposition, state ownership, side effects, data access, dependency direction, multiple cooperating units, or god-object/supercomponent risk
+- when a framework-specific skill matches the technology being changed, apply it together with the relevant engineering skill rather than replacing it
+- for React component architecture, apply `react-component-ownership` together with `ownership-boundaries`
+- apply `tooling-feedback` when touched code has actionable compiler, type-checker, linter, language-server, editor, or framework-plugin diagnostics
+- apply `file-structure` when creating or modifying project-owned React or Flutter UI code
+
+Framework-specific skills translate general engineering principles into idiomatic implementation rules. General engineering skills remain responsible for their architectural or workflow concern.
+
 ## AI assistant behavior
 
 When changing skills:

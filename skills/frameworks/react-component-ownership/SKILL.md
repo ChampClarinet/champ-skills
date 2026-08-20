@@ -1,6 +1,6 @@
 ---
 name: react-component-ownership
-description: Apply ownership-boundary principles to React component architecture. Trigger proactively when creating or modifying React components with dialogs, tabs, forms, tables, query hooks, useState/useEffect, callbacks, shared fetching, nested composition, or excessive component fragmentation; especially when deciding whether state, effects, queries, mutations, handlers, UI zones, or small render fragments belong in a parent or child component.
+description: Apply ownership-boundary principles to React component architecture. Trigger proactively when creating or modifying React components with dialogs, tabs, forms, tables, query hooks, useState/useEffect, callbacks, shared fetching, nested composition, excessive component fragmentation, or Next.js client/server boundaries; especially when deciding whether state, effects, queries, mutations, handlers, UI zones, small render fragments, or `use client` belong in a parent or child component.
 ---
 
 # React Component Ownership
@@ -113,6 +113,48 @@ Do not assume splitting a component or moving JSX into another file automaticall
 
 Do not introduce speculative `memo`, `useMemo`, `useCallback`, context, or component fragmentation without a real render/dependency reason. Prefer profiling or a clear render-frequency argument when performance is the motivation.
 
+## Next.js client boundaries
+
+In Next.js App Router code, default to Server Components and introduce `"use client"` only at the narrowest module boundary that actually requires client-only behavior.
+
+A file normally needs `"use client"` when it directly uses client-only capabilities such as:
+
+- `useState`, `useReducer`, `useEffect`, or other client-only React hooks
+- browser APIs such as `window`, `document`, `localStorage`, or DOM event APIs
+- interactive event handlers or client-side subscriptions that require a Client Component boundary
+- client-only context/providers or libraries that require execution in the browser
+- framework APIs that explicitly require a Client Component
+
+Do not add `"use client"` merely because:
+
+- the file exports a React component
+- the component renders JSX
+- the component receives props and displays data
+- the component is imported by a Client Component
+- another component in the same feature is a Client Component
+- adding the directive feels safer
+
+Being imported into the client module graph does not mean every descendant file should declare its own `"use client"` directive. The directive declares a client entry boundary; it is not a per-component annotation.
+
+Prefer keeping the client boundary as low and narrow as practical. A server-renderable page, layout, section, or composition component should remain server-compatible when only a nested interactive unit requires the client runtime.
+
+For example:
+
+```txt
+page.tsx                    # Server Component
+├─ summary-section.tsx      # Server Component
+└─ stock-filter.tsx         # Client Component: owns interactive filters
+   └─ filter-label.tsx      # no `use client` unless this file directly needs it
+```
+
+Do not cascade `"use client"` across sibling or descendant files without a direct requirement.
+
+When adding or preserving `"use client"`, be able to identify the concrete client-only dependency that justifies the boundary. If none exists, remove the directive unless an established framework/library constraint requires it.
+
+When refactoring an overly broad client boundary, move client-only behavior into the narrowest meaningful interactive owner rather than converting the whole page or feature tree to client rendering.
+
+Do not contort architecture solely to eliminate every Client Component. The goal is intentional, narrow boundaries, not zero client code.
+
 ## Local state and effects
 
 Prefer keeping `useState`, `useReducer`, `useEffect`, subscriptions, timers, and lifecycle cleanup in the component whose UI or workflow requires them.
@@ -204,7 +246,7 @@ Avoid correcting a supercomponent by swinging to the opposite extreme and creati
 
 Use `file-structure` together with this skill when creating or modifying project-owned React UI.
 
-`file-structure` determines file boundaries and TypeScript/TSX naming/entrypoint conventions. This skill determines behavioral ownership and hierarchical decomposition.
+`file-structure` determines file boundaries and TypeScript/TSX naming/entrypoint conventions. This skill determines behavioral ownership, hierarchical decomposition, and intentional client/server boundaries.
 
 One component per file does not mean every JSX fragment should become a component. First decide whether a meaningful component boundary exists; only then apply the one-component-per-file rule.
 
@@ -220,6 +262,9 @@ Before declaring React component architecture complete, confirm:
 - each zone can decompose again according to responsibility rather than arbitrary line count
 - tiny presentational fragments were not extracted solely because they contain JSX
 - every standalone component has a meaningful responsibility, reuse, complexity, lifecycle, or justified rendering reason
+- every added or preserved `"use client"` has a concrete client-only requirement
+- client boundaries are as narrow as practical rather than copied through the component tree
+- server-compatible parents/sections remain server-compatible when only a nested owner needs client behavior
 - state is owned by the narrowest component that needs to coordinate it
 - effects live with the workflow whose lifecycle triggers them
 - reusable query logic is extracted without unnecessary centralization

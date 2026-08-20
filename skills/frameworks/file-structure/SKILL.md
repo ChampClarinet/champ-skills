@@ -1,6 +1,6 @@
 ---
 name: file-structure
-description: Mandatory file organization rules for maintainable component and class structure, including TypeScript semantic filenames and logical entrypoint folders.
+description: Mandatory file organization rules for maintainable component and class structure, including TypeScript semantic filenames, component-local supporting code, and logical entrypoint folders.
 ---
 
 # File Structure
@@ -21,9 +21,56 @@ Use one primary class or component per file.
 
 Terms such as "prefer", "when practical", file size, convenience, locality, or reduced import count must not weaken these rules. For project-owned React code, one component per file is a completion requirement.
 
-Non-component helpers, hooks, types, constants, and data may remain alongside the file's single component when they are tightly coupled to it. They must not render JSX or be used as React components.
-
 A route, page, or layout may remain the single primary React component in its own file. Do not create a redundant pass-through wrapper merely to satisfy this rule.
+
+## Component-local supporting code
+
+Keep supporting code that belongs only to one component in the same file as that component by default.
+
+This includes:
+
+- component-specific props interfaces or types
+- component-specific state or event types
+- local schemas or validation configuration
+- tightly coupled constants
+- small non-rendering helpers
+- small lookup maps or configuration used only by that component
+
+Example:
+
+```tsx
+interface CreateStockFormProps {
+  stockId: string
+  onSuccess: () => void
+}
+
+const DEFAULT_QUANTITY = 1
+
+export function CreateStockForm({ stockId, onSuccess }: CreateStockFormProps) {
+  // ...
+}
+```
+
+Do not extract component-local supporting code into files such as:
+
+```txt
+create-stock.types.ts
+create-stock.constants.ts
+create-stock.helpers.ts
+```
+
+merely for organizational symmetry, file-count consistency, or because the supporting declaration could technically be imported elsewhere.
+
+Extract supporting code only when it has a real ownership reason, such as:
+
+- it is shared by multiple independent components or owners
+- it represents a domain, API, application, or cross-feature contract independent of the component
+- it is substantial enough to have its own responsibility and maintenance lifecycle
+- repository or framework conventions require the separation
+
+A reusable or exported declaration is not automatically independently owned. Prefer colocation until shared ownership actually exists.
+
+Do not confuse "one component per file" with "one declaration per file." Non-rendering code that belongs to the component should remain colocated.
 
 ## TypeScript / TSX filename convention
 
@@ -214,6 +261,7 @@ Before completing any task that creates or modifies React or Flutter UI code:
 - [ ] Inspect every created or modified project-owned React/TSX and Flutter/Dart UI file.
 - [ ] Count every React function, class, arrow function, or variable used as a component, including non-exported and nested components.
 - [ ] Confirm that each project-owned React file contains exactly one React component.
+- [ ] Confirm component-local props/types/helpers/constants/schemas remain colocated unless they have a real shared or independent owner.
 - [ ] For project-owned TypeScript/TSX files, confirm filenames use lowercase `kebab-case` subjects with optional dot-role segments.
 - [ ] Confirm each `index.ts` or `index.tsx` is a real logical-unit entrypoint rather than a habitual wrapper or dumping ground.
 - [ ] Confirm that each project-owned Flutter file contains exactly one widget, except for its single matching state class when applicable.
@@ -233,6 +281,7 @@ Optimize for:
 - grep/searchability
 - predictable navigation
 - responsibility-aligned file layout
+- useful colocation
 - smaller diffs
 - easier code review
 - lower merge conflict risk

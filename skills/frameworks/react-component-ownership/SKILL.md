@@ -1,6 +1,6 @@
 ---
 name: react-component-ownership
-description: Apply ownership-boundary principles to React component architecture. Trigger proactively when creating or modifying React components with dialogs, tabs, forms, tables, query hooks, useState/useEffect, callbacks, shared fetching, or nested composition; especially when deciding whether state, effects, queries, mutations, handlers, or UI zones belong in a parent or child component.
+description: Apply ownership-boundary principles to React component architecture. Trigger proactively when creating or modifying React components with dialogs, tabs, forms, tables, query hooks, useState/useEffect, callbacks, shared fetching, nested composition, or excessive component fragmentation; especially when deciding whether state, effects, queries, mutations, handlers, UI zones, or small render fragments belong in a parent or child component.
 ---
 
 # React Component Ownership
@@ -14,6 +14,8 @@ This skill is React-specific. Use it together with the framework-agnostic owners
 > Keep React state, effects, queries, mutations, and handlers in the narrowest component that actually owns the behavior.
 
 Do not make a parent component the default controller for every nested workflow.
+
+Also do not turn every small JSX fragment into a standalone component. Extract responsibility, not markup.
 
 ## Parent responsibility
 
@@ -64,6 +66,37 @@ A good boundary makes it easier to answer:
 - what state/effects belong here
 - what children it coordinates
 - what can change without understanding unrelated zones
+
+## Meaningful component boundaries
+
+A standalone component should normally have a reason to exist beyond making the parent file shorter.
+
+Strong extraction reasons include:
+
+- independent state, effects, lifecycle, queries, mutations, or event behavior
+- a distinct workflow or feature responsibility
+- meaningful independent reuse
+- substantial rendering complexity that is easier to reason about in isolation
+- a useful testing/review boundary tied to a real responsibility
+- a justified rendering/performance boundary
+
+Weak extraction reasons include:
+
+- the JSX is a few lines long
+- the fragment has a name
+- the parent looks visually cleaner after extracting it
+- every conditional branch is being turned into a component
+- every option, label, table cell, badge, or value formatter is being moved to its own file
+
+Tiny presentational fragments that are tightly coupled to one owner may stay inline or as a local render helper.
+
+For example, an autocomplete option renderer that only chooses between a label and a two-line employee display usually belongs with the autocomplete owner rather than in a standalone `employee-option.tsx` component.
+
+Use this test:
+
+> If this fragment became a separate file, what independent responsibility would that file own?
+
+If the answer is only "it renders these few lines of JSX," keep it local unless reuse, complexity, or measured rendering behavior provides another real reason.
 
 ## Performance-aware boundaries
 
@@ -165,13 +198,17 @@ Before finishing a component-heavy change, inspect whether the top-level compone
 
 If so, move each responsibility to its proper owner while preserving genuine shared coordination at the parent.
 
+Avoid correcting a supercomponent by swinging to the opposite extreme and creating dozens of trivial leaf components with no independent responsibility.
+
 ## Relationship to file structure
 
 Use `file-structure` together with this skill when creating or modifying project-owned React UI.
 
 `file-structure` determines file boundaries and TypeScript/TSX naming/entrypoint conventions. This skill determines behavioral ownership and hierarchical decomposition.
 
-One component per file does not by itself prevent a supercomponent if all state and effects remain centralized in the parent.
+One component per file does not mean every JSX fragment should become a component. First decide whether a meaningful component boundary exists; only then apply the one-component-per-file rule.
+
+One component per file also does not by itself prevent a supercomponent if all state and effects remain centralized in the parent.
 
 A folder `index.tsx` may be the composition entrypoint for a zone, but it should not become the dumping ground for every child implementation detail.
 
@@ -181,6 +218,8 @@ Before declaring React component architecture complete, confirm:
 
 - major pages/features are decomposed into meaningful zones where appropriate
 - each zone can decompose again according to responsibility rather than arbitrary line count
+- tiny presentational fragments were not extracted solely because they contain JSX
+- every standalone component has a meaningful responsibility, reuse, complexity, lifecycle, or justified rendering reason
 - state is owned by the narrowest component that needs to coordinate it
 - effects live with the workflow whose lifecycle triggers them
 - reusable query logic is extracted without unnecessary centralization

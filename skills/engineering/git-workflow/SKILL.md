@@ -15,7 +15,10 @@ Follow this workflow whenever creating commits, suggesting commit messages, spli
 - Break large work into logical commits.
 - Avoid mixing unrelated changes in one commit.
 - Keep commit history readable, reviewable, and easy to revert.
-- If Husky rejects a commit, do not bypass automatically. Explain the failure and ask before using `HUSKY=0`.
+- Treat Git hooks as required validation, not an obstacle to work around.
+- If a Git hook rejects a commit, diagnose and fix the underlying failure, then retry the commit normally.
+- Never bypass hooks automatically with `--no-verify`, `HUSKY=0`, hook deletion, hook-path changes, or equivalent mechanisms.
+- Hook bypass is allowed only when the user explicitly instructs bypassing the hook for that specific commit. Do not ask the user for permission to bypass as a fallback.
 
 ## Commit Format
 
@@ -164,17 +167,27 @@ Avoid:
 
 - README rewrite + Flutter skill + Husky config + unrelated formatting in one commit
 
-## Husky Rules
+## Git Hook Rules
 
-If Husky rejects a commit:
+If Husky or any other Git hook rejects a commit:
 
-1. Read the error.
-2. Explain what failed.
-3. Fix the issue when reasonable.
-4. Ask before bypassing hooks.
-5. Use `HUSKY=0` only after explicit approval.
+1. Read the complete hook output and identify which validation failed.
+2. Determine whether the failure comes from the staged changes, commit message, dependencies, configuration, or the hook/tooling itself.
+3. Fix the underlying issue when it is within the task or repository scope.
+4. Re-run the relevant validation directly when useful to confirm the fix.
+5. Retry the commit normally with hooks enabled.
+6. If the failure cannot be fixed safely or is outside the current task, stop and report the blocker instead of bypassing it.
 
-Never silently bypass Husky.
+Forbidden unless the user explicitly instructs bypassing the hook for that specific commit:
+
+- `git commit --no-verify`
+- `HUSKY=0 git commit ...`
+- disabling or deleting hook files
+- changing `core.hooksPath` to evade hooks
+- editing hook configuration solely to make the commit pass without fixing the failure
+- any equivalent mechanism that skips repository-required commit validation
+
+Do not propose bypassing hooks, ask for permission to bypass them, or treat bypass as a normal fallback. A prior bypass instruction does not carry forward to later commits unless the user explicitly says it does.
 
 ## Suggested Commit Planning Output
 

@@ -26,3 +26,4 @@ Framework skills should:
 
 - **[file-structure](./file-structure/SKILL.md)** — File organization rules for maintainable component and class structure.
 - **[react-component-ownership](./react-component-ownership/SKILL.md)** — Apply ownership-boundary principles to React state, effects, queries, dialogs, tabs, forms, and component composition.
+- **[shadcn-ui](./shadcn-ui/SKILL.md)** — Use a registry-first workflow for shadcn/ui: reuse local primitives, verify the current official registry, prefer the official CLI, and hand-roll only when necessary.

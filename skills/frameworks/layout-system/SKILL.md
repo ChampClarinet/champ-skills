@@ -1,6 +1,6 @@
 ---
 name: layout-system
-description: Mandatory layout rules that prioritize Grid, Flexbox, hierarchical gaps, responsive spacing, and gap-based structure over spacing hacks and arbitrary offsets.
+description: Mandatory layout rules that prioritize Grid, Flexbox, hierarchical gaps, responsive spacing, container-aware responsiveness, and gap-based structure over spacing hacks and arbitrary offsets.
 ---
 
 # Layout System
@@ -99,6 +99,23 @@ Recommended viewport checks:
 
 Also drag or step through the full range between these widths. Passing only the listed snapshots is not sufficient.
 
+## Container-Aware Components
+
+Viewport width and component width are not interchangeable.
+
+When a reusable module or component can be rendered inside layouts whose available width changes independently of the viewport—for example inside sidebars, dashboard columns, split panes, dialogs, drawers, nested cards, or embeddable feature shells—make its responsive behavior container-aware.
+
+- Prefer CSS container queries for component- or module-level layout decisions that depend on the width of the component's parent region rather than the browser viewport.
+- Establish an intentional container boundary at the feature/module owner instead of scattering unrelated container declarations through descendants.
+- In Tailwind projects with container-query support, prefer the repository's standard container-query variants and conventions over arbitrary CSS when they express the requirement cleanly.
+- Do not rely only on viewport breakpoints such as `sm:`, `md:`, `lg:`, or `xl:` when a component may become narrow because of a sidebar, dashboard grid, dialog, drawer, or other parent layout while the viewport remains wide.
+- Viewport breakpoints remain appropriate for true page-level behavior. Use container queries for reusable child composition whose available width is controlled by its containing layout.
+- Avoid fixed widths that merely happen to fit the component's current page placement. Components should tolerate being embedded in narrower or wider valid containers.
+- Verify container-aware components at multiple parent widths without changing the viewport, including narrow states that can occur on desktop.
+- Do not add container-query complexity to components whose layout genuinely depends only on viewport-level page composition.
+
+A component that works at a mobile viewport but breaks when placed in a narrow desktop column is not responsive.
+
 ## Tailwind CSS Guidance
 
 Preferred:
@@ -152,7 +169,7 @@ When reproducing a reference image:
 - Match the reference with Grid/Flex structure and hierarchical gaps first, then tune a small number of local spacing values only when necessary.
 - Infer how spacing and grouping should adapt outside the captured reference width.
 - Do not chase screenshot fidelity by accumulating arbitrary margins, `space-y-[...]`, transforms, or positioned offsets.
-- Responsive behavior must come from layout rules and breakpoints, not from compensating offsets.
+- Responsive behavior must come from layout rules and breakpoints or container queries appropriate to the ownership boundary, not from compensating offsets.
 
 ## Cross-Browser Safety
 
@@ -183,12 +200,14 @@ Before completing any task that creates or modifies web UI layout:
 - [ ] Perform a graceful-degradation smoke check at `280px`.
 - [ ] Confirm widths from `280px` to `319px` keep content accessible, controls usable, and text free from destructive overlap or clipping.
 - [ ] Inspect intermediate widths between breakpoints for cramped, excessive, or abrupt spacing changes.
+- [ ] For reusable components/modules whose width can differ from viewport width, verify whether container queries are required and test multiple parent-container widths independently of the viewport.
+- [ ] Verify narrow desktop containers caused by sidebars, dashboard columns, dialogs, drawers, or split panes do not preserve an invalid wide-layout composition merely because the viewport breakpoint is large.
 - [ ] Verify long text, wrapping, localization, and browser text zoom do not create overlap or broken spacing.
 - [ ] Confirm ordinary page content has no unintended horizontal overflow.
 - [ ] Verify Safari and iOS Safari compatibility for the affected layout.
 - [ ] Refactor every spacing hack, broken spacing hierarchy, or responsive spacing defect discovered during verification before reporting the task complete.
 
-Do not report the task as complete while any checklist item fails. A layout that only works because of accumulated spacing offsets, flat hierarchy-less gaps, breakpoint-only testing, or inaccessible narrow-width degradation is not complete.
+Do not report the task as complete while any checklist item fails. A layout that only works because of accumulated spacing offsets, flat hierarchy-less gaps, viewport-only breakpoint assumptions, or inaccessible narrow-width degradation is not complete.
 
 ## Intent
 
@@ -196,6 +215,7 @@ Optimize for:
 
 - predictable layout behavior
 - responsive stability
+- container-aware reusable components
 - cross-browser consistency
 - maintainable spacing systems
 - clear visual and structural hierarchy

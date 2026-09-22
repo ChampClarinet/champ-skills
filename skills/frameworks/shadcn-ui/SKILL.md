@@ -34,3 +34,26 @@ When a feature needs UI such as dialogs, confirmation flows, selectors, calendar
 - Hand-roll only the behavior that is genuinely project-specific.
 
 The goal is not to force every interface into a stock component. The goal is to avoid maintaining custom equivalents of components that shadcn/ui already provides and maintains.
+
+## Form controls and ownership boundaries
+
+When a project uses `react-hook-form` (RHF), treat RHF and the UI component system as separate concerns:
+
+- RHF owns form state, registration/controllers, validation, submission, and field errors.
+- shadcn/ui or the project's local design-system components own the rendered controls and interaction UI.
+- Do not interpret "use RHF" as permission to render raw `<input>`, `<select>`, `<textarea>`, date inputs, or hand-rolled pickers when an appropriate local/shadcn component exists or can be added from the official registry.
+- Prefer the repository's existing field wrappers and form composition patterns. Use `Controller`/controlled integration only when the chosen UI component requires it.
+- Raw native controls are deliberate exceptions, not the default. Use them only when native semantics/capabilities are specifically required or no suitable design-system primitive exists, and make the reason clear in the implementation.
+
+Keep interactive responsibilities separated at meaningful ownership boundaries:
+
+- A page or list may coordinate feature-level data, but should not absorb the internals of every create/edit form, dialog, picker, mutation, and presentation concern.
+- Create/edit dialogs or sheets should normally own their own open/form interaction state when that state is local to the interaction.
+- Extract forms, dialogs, lists, and independently stateful interactions when doing so creates a clear responsibility boundary.
+- Do not create a "supercomponent" merely because several interactions appear on the same screen.
+- Also avoid the opposite extreme: do not split trivial markup into one-off components that only add indirection.
+
+Before finishing UI work, explicitly check both questions:
+
+1. Are common controls implemented with the project's local/shadcn primitives rather than raw browser controls without a concrete reason?
+2. Does each component have a coherent responsibility, without combining unrelated list, dialog, form, mutation, and presentation ownership?

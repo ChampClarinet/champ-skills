@@ -23,6 +23,24 @@ A cohesive, well-understood task may use one implementation agent. Add roles dyn
 
 Lead agents should normally coordinate and evaluate rather than spend expensive reasoning budget on long mechanical implementation, but direct implementation is acceptable for trivial edits, integration glue, or tiny review fixes where delegation overhead would dominate.
 
+## Planning checkpoint
+
+Before dispatching implementation agents, plan for **safe concurrency**, not concurrency for its own sake.
+
+1. Identify the dependency graph between implementation slices.
+2. Freeze shared contracts that downstream work needs: API shapes, domain rules, interfaces, ownership boundaries, and other cross-slice assumptions.
+3. Assign explicit, non-overlapping file/area ownership where possible.
+4. Distinguish a real dependency from a conceptual ordering. Do not serialize a slice merely because another slice is described first; serialize only when it requires unresolved output from the upstream slice.
+5. Dispatch all independent, economically worthwhile slices before waiting for any one of them.
+6. Record the frozen contracts, ownership, dependencies, and join/integration point in durable run state so parallel agents do not depend on Lead conversation context.
+
+Parallelize only when:
+- the downstream inputs are sufficiently frozen,
+- agents will not race on the same files/state,
+- and expected wall-clock/context savings exceed spawn, reread, and integration overhead.
+
+If those conditions are not met, prefer sequential execution. A tiny independent slice does not deserve a separate agent merely because it could run in parallel.
+
 ## Durable run protocol
 
 For an active run, prefer:

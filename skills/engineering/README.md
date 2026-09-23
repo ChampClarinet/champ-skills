@@ -12,3 +12,4 @@
 - **[skeptic](./skeptic/SKILL.md)** — Challenge implementation assumptions with evidence instead of agreeing by default.
 - **[archaeologist](./archaeologist/SKILL.md)** — Recover the reason legacy code exists before modernizing or deleting it.
 - **[paranoid](./paranoid/SKILL.md)** — Adversarial pre-ship pass for hidden failure paths and false confidence.
+- **[agent-orchestration](./agent-orchestration/SKILL.md)** — Coordinate coding subagents through durable repository checkpoints so runs can resume without conversation history or mandatory role ceremony.

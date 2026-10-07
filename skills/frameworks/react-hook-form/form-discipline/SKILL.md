@@ -1,289 +1,99 @@
 ---
 name: react-hook-form-discipline
-description: React Hook Form guidance focused on form ownership, validation, schema usage, field organization, async submission, and maintainable form workflows.
+description: Champ's React Hook Form defaults for form ownership, validation, controlled inputs, async submission, reset behavior, and complex form decomposition. Use for non-trivial React Hook Form workflows.
 ---
 
 # React Hook Form Discipline
 
-Use React Hook Form for maintainable, performant form workflows.
+Keep each form's state, validation, submission, and reset lifecycle owned by the form workflow.
 
-Forms should keep validation, submission, and state ownership predictable and easy to reason about.
+Repository-local explicit conventions override these defaults.
 
-Do not turn forms into giant effect-driven state machines.
+## When to use it
 
-## Core Principles
+Use React Hook Form when a form benefits from coordinated validation, async submission, dynamic fields, reusable field infrastructure, schema integration, or reduced rerender pressure.
 
-- Prefer explicit form ownership.
-- Keep form state local when possible.
-- Prefer uncontrolled inputs when practical.
-- Centralize validation intentionally.
-- Prefer centralized and predictable validation for complex forms.
-- Avoid unnecessary form re-renders.
-- Keep submission flow easy to trace.
-- Keep field responsibility understandable.
+Do not introduce it mechanically for trivial input state.
 
-## When to Use React Hook Form
+## Ownership
 
-Use React Hook Form for:
+Keep form state local to the form or workflow whenever practical.
 
-- non-trivial forms
-- validation-heavy forms
-- async submission flows
-- dynamic forms
-- reusable field systems
-- multi-field coordination
-- forms requiring performance optimization
-- schema-based validation
-- forms with nested structures
+Do not promote form state into Redux, broad Context, or an unrelated parent merely to share helpers or avoid prop passing.
 
-For tiny/simple forms, plain React state may still be simpler.
+A form-oriented component should normally own its validation, submission state, submission errors, and reset lifecycle unless another owner genuinely coordinates the same transaction.
 
-Do not introduce React Hook Form mechanically for every input.
-
-## Form Ownership
-
-Keep form state ownership local to the form/module whenever practical.
-
-Prefer:
-
-```txt
-Form
-  -> validation
-  -> submission
-  -> field state
-```
-
-Avoid pushing form state into:
-
-- Redux
-- global stores
-- unrelated Context providers
-
-unless the form is intentionally part of a larger project-level workflow.
+Compose with `ownership-boundaries` and `react-component-ownership`.
 
 ## Validation
 
-Prefer predictable validation ownership.
+Give validation one clear source of truth.
 
-Centralize validation intentionally.
+For non-trivial forms, prefer a readable schema/resolver boundary when it improves consistency and type safety.
 
-Validation may use:
+Do not scatter overlapping validation across JSX, effects, submit handlers, and unrelated helpers.
 
-- schema validation
-- field-level validation
-- resolver-based validation
-- custom validation logic
+Keep transformations explicit. Avoid schema cleverness that hides what values enter or leave the form.
 
-depending on project needs and complexity.
+Distinguish field validation errors from submission/server errors.
 
-Avoid scattering validation rules across:
+## Controlled inputs
 
-- JSX
-- effects
-- submit handlers
-- random helper files
+Prefer uncontrolled registration when practical.
 
-Validation should have one clear source of truth.
+Use controlled integration when the UI component or workflow genuinely requires explicit value ownership, formatting/masking, or synchronization with external UI state.
 
-## Schema Discipline
+Do not wrap every field in controlled state by default.
 
-Keep schemas readable.
+## Async submission
 
-Prefer:
+Keep submission flow explicit and traceable:
 
-- domain-oriented schemas
-- reusable field schemas
-- explicit validation messages
-- predictable transformation rules
+`submit → pending → success/error → intentional reset/navigation`
 
-Avoid:
+Do not orchestrate submission through chains of effects or duplicate loading state outside the form without a real shared owner.
 
-- giant impossible-to-read schemas
-- deeply magical transforms
-- validation logic hidden across many files
+Preserve useful backend failure information rather than collapsing every failure into a generic form error.
 
-## Controlled vs Uncontrolled Inputs
+## Defaults and reset
 
-Prefer uncontrolled inputs when practical.
+Treat default values and reset behavior as lifecycle decisions.
 
-Use controlled inputs only when:
+Avoid implicit resets, stale default-value synchronization, or effect-driven hydration whose ownership is unclear.
 
-- integrating with controlled UI libraries
-- implementing complex formatting/masking
-- synchronizing external UI state
-- the component requires explicit value ownership
+When external data can change after mount, define explicitly whether the form should preserve edits, reset, merge, or reject the update.
 
-Do not wrap every input in controlled state unnecessarily.
+## Dynamic and large forms
 
-## Field Components
+Split large forms by meaningful workflow or ownership sections, not arbitrary line count.
 
-Extract reusable field components when:
+Keep field-array and nested-field ownership understandable. Avoid deeply nested field paths or watcher networks that make update flow difficult to trace.
 
-- validation UI repeats
-- styling repeats
-- field structure repeats
-- accessibility handling repeats
+Subscribe/watch only where the value is actually needed; do not prematurely optimize every field.
 
-Good examples:
+## Field abstractions
 
-```txt
-form-input
-form-select
-form-checkbox
-form-date-picker
-```
+Extract field components when repeated validation UI, accessibility behavior, styling, or interaction represents the same concept.
 
-Avoid over-abstracting fields too early.
+Do not build a field abstraction framework before repetition and ownership are clear.
 
-Not every input needs a framework-level abstraction.
+Use shadcn/Radix integration according to the component's actual controlled/uncontrolled contract rather than forcing one model.
 
-## shadcn/ui Integration
+## Type and accessibility boundaries
 
-Use shadcn/ui form primitives when they improve consistency and readability.
+Keep field names and submitted values type-safe. Do not bypass form typing with `any`.
 
-Keep form composition readable.
+Preserve labels, semantics, keyboard interaction, focus behavior, and understandable validation messages.
 
-Avoid deeply nested abstraction layers around shadcn form components.
+## Verification
 
-## Async Submission
+For touched form behavior, verify:
 
-Keep async submission flow explicit.
-
-Prefer:
-
-- clear loading state
-- explicit success/error handling
-- predictable retry behavior
-- submission ownership inside the form boundary
-
-Avoid:
-
-- hidden submission side effects
-- chained `useEffect` orchestration
-- duplicated loading state
-- submission logic spread across unrelated files
-
-## Error Handling
-
-Keep validation and submission errors distinguishable.
-
-Prefer:
-
-- field-level validation messages
-- form-level submission errors
-- explicit server error handling
-- predictable reset behavior
-
-Do not hide backend failures behind generic UI messages.
-
-## Reset and Default Values
-
-Use default values intentionally.
-
-Keep reset behavior explicit.
-
-Avoid:
-
-- implicit form resets
-- stale default value synchronization
-- effect-driven form hydration without clear ownership
-
-If async data initializes the form, make hydration flow understandable.
-
-## Dynamic Forms
-
-For dynamic/nested forms:
-
-- use field arrays intentionally
-- keep nested ownership readable
-- avoid deeply confusing field paths
-- split large dynamic sections into focused components
-
-Avoid giant monolithic dynamic forms.
-
-## Performance
-
-React Hook Form is already optimized for form performance.
-
-Prefer:
-
-- localized field subscriptions
-- uncontrolled inputs when practical
-- splitting large forms into sections
-- avoiding unnecessary watchers
-
-Do not prematurely optimize every field.
-
-## Effects Discipline
-
-Avoid using `useEffect` as form workflow glue.
-
-Prefer:
-
-- explicit submit handlers
-- derived values
-- schema validation
-- controlled ownership boundaries
-
-Use effects only when synchronizing with external systems.
-
-## TypeScript
-
-Use TypeScript-first forms.
-
-Prefer typed schemas and inferred form values:
-
-```ts
-interface LoginFormValues {
-  email: string;
-  password: string;
-}
-```
-
-Keep form field names type-safe when practical.
-
-Avoid bypassing form typing with `any`.
-
-## Accessibility
-
-Forms should remain accessible.
-
-Prefer:
-
-- labels
-- descriptive validation messages
-- keyboard-accessible controls
-- proper input semantics
-- visible error/focus states
-
-Do not sacrifice accessibility for abstraction cleverness.
-
-## Common Anti-Patterns
-
-Avoid:
-
-- giant monolithic form components
-- validation logic scattered everywhere
-- excessive controlled inputs
-- form state in Redux without clear reason
-- effect-driven submission workflows
-- duplicated validation sources
-- hidden async submission logic
-- field abstraction frameworks too early
-- giant nested field paths that nobody understands
-- bypassing TypeScript with `any`
-
-## Review Checklist
-
-When reviewing React Hook Form code, ask:
-
-- Is form ownership clear?
-- Is validation centralized?
-- Does this really need controlled inputs?
-- Is async submission easy to trace?
-- Are errors handled predictably?
-- Is the form too monolithic?
-- Is schema complexity still readable?
-- Are effects actually necessary?
-- Would another developer understand this quickly?
-- Can this form be simpler?
+- form ownership is local unless coordination requires otherwise
+- validation has one authoritative path
+- controlled fields are controlled for a concrete reason
+- submission and reset lifecycle are explicit
+- backend errors remain distinguishable from field validation
+- external default-value changes have defined behavior
+- dynamic sections remain understandable
+- effects are not acting as hidden workflow glue

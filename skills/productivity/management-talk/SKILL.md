@@ -1,172 +1,172 @@
 ---
 name: management-talk
-description: Rewrite engineer-to-engineer content for engineering-org leadership (VPs, directors, PMs, release managers, execs in an engineering-savvy company) and shape it for the channel it is going to — JIRA comment, Slack post, async standup line, email, or meeting talking-points. Trigger when the user asks to write/rewrite for management / exec / VP / director / PM / release manager, asks for an "executive summary / leadership update / status update", says "make this less technical / less jargony", or asks for a slack / email / standup / meeting version of work originally written engineer-to-engineer.
+description: Reframe engineering content for engineering-org leadership and shape it for JIRA, Slack, async standup, email, or meeting talking points. Use for leadership/status updates, executive summaries, less-technical rewrites, or channel-specific versions of engineering work.
 ---
 
 # Management Talk
 
-Same audience and translation rules as a written status report, but **shaped for the channel** — JIRA comment, Slack post, async standup, email, or meeting talking-points. The audience reads code names but not code. The channel decides the length, formatting, and how much structure to leave on the page.
+Translate engineering truth for engineering-savvy leadership without losing state, impact, ownership, tracking references, risk, or next action.
 
-Use this any time engineering content needs to flow up the org, sideways into product/release, or into a non-engineering meeting — regardless of the destination.
+This is a reframe, not a new analysis. Never improve the story by inventing certainty or facts.
 
-## When to invoke
+Use `post-mortem` as the canonical engineering record when one exists; this skill changes audience and channel, not the underlying truth.
 
-- "write something for management / exec / VP / director / PM / release manager"
-- "rewrite this for [non-eng audience]"
-- "make this non-technical" / "less techy" / "less jargony"
-- "send a slack update / standup note / email" _about a piece of engineering work_
-- "executive summary" / "exec summary" / "leadership update" / "status update"
-- "talking points for [meeting]" _based on an engineering update_
+## Audience boundary
 
-If the channel is unclear after the trigger, ask one short question — _"JIRA, Slack, standup, or email?"_ — and stop.
+The default audience is engineering-org leadership: VPs, directors, PMs, release managers, and technical executives who understand product and concept-level engineering vocabulary but do not need code-level mechanics.
 
-## Audience — what "engineering-org leadership" means
+For materially different audiences such as customers, marketing, finance, or a true ELI5 explanation, adapt deliberately rather than assuming this abstraction level fits.
 
-Engineering-savvy non-engineers: VPs, directors, PMs, release managers, execs in companies that ship technical products. They read product/framework names and cross-reference JIRA keys and PRs. They do not read code.
+## Translation rules
 
-They want: _what's the state, what does it mean for customers, who owns it, what's next._ They do not want: how the bug works at the function level.
+### Keep
 
-This is **not** for marketing, finance, customer-facing, or true ELI5 audiences — those need a different rewrite. Flag and confirm before producing one.
+Preserve facts that let leadership understand or track the work:
 
-## Tone
+- current state and impact
+- product, framework, service, or team-owned component names
+- customer or workload identifiers
+- JIRA/ticket keys and PR numbers
+- owner when known
+- mitigation, risk, blocker, decision point, and next step when relevant
 
-**Keep.** Product names, framework names, team-owned component names, JIRA keys, PR numbers, customer/workload identifiers (`Tada`, `DeepSpeed`, `PyTorch`, `Llama-2-70B`, `vLLM`, `JIRA-12345`, `PR #5751`). These are the bridge between engineering and leadership tracking.
+### Strip
 
-**Strip.** Function names, file paths, struct fields, commit SHAs, code expressions, env var names, line numbers, internal data-structure jargon (`tadaLaunchPrepare`, `tada/prim.h::syncWaitPeer`, `scratchBuf`, `0e0a6bac`). None of this is actionable to the audience.
+Remove implementation identifiers that do not change the leadership decision:
 
-**Translate.** Mechanism into one or two sentences of plain-English cause-and-effect. Not _"the kernel reads from `scratchBuf == NULL`"_ but _"the GPUs end up reading from an uninitialized buffer and wait forever for a signal that never arrives."_ Translate without lying — a race stays a race; a regression stays a regression.
+- function and variable names
+- file paths and line numbers
+- struct fields and code expressions
+- commit SHAs
+- low-level debugging mechanics
 
-**Don't over-strip.** Engineering-org leadership reads concept-level technical vocabulary fluently — _race condition, synchronization, uninitialized buffer, fast-path, workaround, registration, queue, driver, kernel_ (in the GPU sense). The line is between _concept exists and matters here_ (keep) and _here's the function/struct/file/SHA_ (strip). Replacing "race" with "timing issue" patronizes the reader.
+Keep one only when that exact identifier is itself operationally or organizationally important.
 
-**Bias toward** active voice, concrete subjects, short paragraphs. _"We found the bug. Alex wrote the fix. PR is up for review."_ beats _"The root cause has been identified and a fix has been authored and submitted for review."_
+### Translate
 
-**Avoid:**
+Convert mechanism into concise cause and effect without changing its meaning.
 
-- Hedging that isn't really hedging (_"we believe," "appears to," "may have"_). State it or don't.
-- Re-stating the obvious for thoroughness (_"This bug is in Tada, which is used for GPU communication, which is important for distributed training, which..."_).
-- Telling leadership how to do their job (_"you should prioritize," "this needs to land before X"_). Give them the facts; they decide.
-- Engineering-process minutiae: bisect runs, debug iterations, GDB sessions. They care that you found it, not how. (Exception: when the _process_ itself is the story — _"we burned three weeks before realising the bisect was misleading"_ — then a single sentence as a learning, not a play-by-play.)
+Keep useful concept-level vocabulary such as race condition, synchronization, regression, queue, driver, kernel, fast-path, or workaround when it communicates the problem accurately.
+
+Do not replace precise concepts with vague language merely to sound non-technical.
+
+## Framing
+
+Lead with the information that changes what the audience knows or does.
+
+Normally prioritize:
+
+`state → impact → owner/blocker → next step`
+
+Add mechanism, mitigation, risk, or escape-path context only when it changes understanding or a decision.
+
+Use active voice, concrete subjects, and short paragraphs.
+
+Do not:
+
+- hide uncertainty behind confident prose
+- add unsupported hedging
+- narrate debugging minutiae unless the process itself is the relevant lesson
+- restate obvious product background for completeness
+- tell leadership what decision to make unless the user asked for a recommendation
 
 ## Channel shapes
 
-Same content, different shell. Pick the shape that matches where it's going.
+Preserve the same underlying facts while changing density and presentation for the destination.
 
-### JIRA comment / written status report
+### JIRA / written status
 
-Full structured block. Bolded section labels. Easy to scan from the ticket page.
+Use a scan-friendly structured update.
 
-Building blocks (use as many as fit):
+Useful blocks, ordered by relevance:
 
-- **Status / TL;DR.** One bolded line. Reader can stop here and have the right answer. _"Fixed pending merge."_ / _"Root cause unknown — investigating."_ / _"Blocked on vendor."_ / _"Customer-visible regression in 7.2; rollback in flight."_
-- **Impact.** Who's affected, how badly, what they see. Customer / workload / product terms, not test-suite terms. _"Llama-2-70B fine-tuning hangs on every eval step"_ > _"the test fails."_
-- **What broke.** Short paragraph. Plain-English mechanism, one level of why, no code identifiers.
-- **Why now / how it slipped through.** Optional. Include when leadership will ask anyway: latent regression, CI gap, prior incomplete fix, change that landed during a freeze.
-- **Owner.** Person + team + their PR/branch/JIRA artifact. One link, not five.
-- **Next steps.** Concrete, near-term, ordered. _"Code review → merge → backport to 7.2."_
-- **Workaround / mitigation.** If customers are hitting it now, what can they do today? One sentence.
-- **Risk.** Optional. Real risks only — _"fix touches the hot path; perf regression possible until benchmarked."_ Don't manufacture risk to look thorough.
+- **Status / TL;DR** — one line that gives the correct state
+- **Impact** — who or what is affected and how
+- **What broke** — short plain-English mechanism
+- **Why now / escape path** — only when materially useful
+- **Owner / blocker** — known ownership or dependency
+- **Next steps** — concrete near-term progression
+- **Mitigation / workaround** — when users are affected now
+- **Risk** — real risk only; do not manufacture one
 
-Order by what matters most for _this_ item.
+Do not force every block into every update.
 
-### Slack — channel post or DM
+### Slack
 
-Single message, no walls of text. Heavy bolded section labels read as "I escaped from JIRA" — don't.
+For a top-level channel post:
 
-- One **bolded TL;DR** as the first line.
-- 2–4 short bullets underneath: impact, owner+link, next step. Drop blocks that don't apply.
-- One link, embedded inline (`JIRA-12345` / `PR #5751`). Not a link wall.
-- No greeting, no signoff. The channel is the context.
-- If it's a **thread reply** rather than a new post, lose the TL;DR — just lead with the answer.
+- lead with a concise TL;DR
+- follow with only the few facts needed for impact, ownership, blocker, or next step
+- prefer one useful tracking link/reference over a link wall
+- avoid JIRA-shaped walls of labeled sections
 
-Length target: under ~80 words for a top-level post; under ~40 for a thread reply.
+For a thread reply, lead directly with the answer rather than repeating a TL;DR.
 
-### Async standup note
+As a default, keep a top-level update around 80 words or less and a thread reply around 40 words or less unless the situation needs more context.
 
-The audience scans 10 of these in 30 seconds. Front-load the verb.
+### Async standup
 
-- 1–3 lines, max.
-- Pattern: _"\<state\> \<thing\>. \<owner if not me\>. \<next\>."_
-- Examples:
-  - _"Fixed Tada hang affecting dumbModel runs (JIRA-12345). PR #5751 in review. Backport to v7.2 next."_
-  - _"Still chasing the LLM-7B eval-step hang. Reproducer is reliable now; bisecting. No ETA yet."_
-- No bullets, no bolded labels. The format **is** the sentence.
+Use 1–3 lines.
 
-### Email — internal exec / cross-team
+Prefer:
 
-Subject line is half the value.
+`state + thing → owner/blocker if relevant → next step`
 
-- **Subject:** the TL;DR rewritten as a noun phrase. _"Tada hang in dumbModel: fix in review (JIRA-12345)."_
-- **Greeting:** match the recipient register (_Hi Sam,_ / _Hi all,_).
-- **Body:** the JIRA-comment shape, but as flowing paragraphs separated by blank lines rather than bolded section labels. Two or three paragraphs is plenty.
-- **Sign off** with the next decision point that needs the recipient's attention, if any. If none, a plain _"— [Name]"_ is fine.
+Front-load the verb. Do not reproduce a full status report.
 
-### Meeting talking-points
+### Email
 
-You're going to _say_ this, not show it.
+Make the subject carry the state or decision-relevant headline.
 
-- Bullet list, max one short clause per bullet.
-- Order is the order you'll speak in.
-- Include the numbers/keys you want to reference out loud, in the bullet itself, so you don't fumble.
-- Skip prose. _"dumbModel LLM-7B fine-tuning was hanging."_ / _"Root cause: skipped sync in Tada fast-path."_ / _"Alex's fix in review, PR #5751."_ / _"Backport to v7.2 once it lands."_
+Use a small number of flowing paragraphs rather than transplanting JIRA section labels.
 
-## Source material
+End on the next decision, dependency, or action when one exists.
 
-The input is one of:
+### Meeting talking points
 
-1. **A JIRA ticket key** (e.g. `JIRA-12345`) → fetch via `GET /rest/api/3/issue/<KEY>?fields=summary,status,priority,assignee,comment` plus any custom fields your instance uses for technical evaluation — usually the cleanest source of current state. The most recent substantive comment is what to reframe; don't dump the full thread.
-2. **Pasted technical text** → use directly.
-3. **The current conversation** → if you (or the user) just produced engineering content and the user now says _"now in slack"_ / _"now for the VP,"_ reuse what's in context.
+Write for speech:
 
-If the source is ambiguous, ask one question and stop.
+- one short clause per bullet
+- order bullets in speaking order
+- retain numbers, ticket keys, or identifiers the speaker needs to reference aloud
+- avoid prose paragraphs
 
-## Output flow
+## Source handling
 
-1. **Confirm the channel** if it's not stated.
-2. **Produce the draft** as a single chat block, formatted as the channel would render it.
-3. **Ask where it goes:**
-   - Default: print-only — the user copies it.
-   - **Never post to Slack, email, or any non-JIRA channel from this skill.** Hand the draft to the user; they post it.
-4. **One iteration is normal, three is a smell.** If the user is on the third revision, ask what specific framing/audience assumption you're missing — don't keep tweaking blindly.
+Use the strongest available engineering source: a canonical post-mortem, ticket, pasted technical text, repository evidence, or the current conversation.
 
-## Worked example — same bug, three channels
+Prefer the latest substantive state over dumping history.
 
-**Source (engineering JIRA comment):**
+If sources conflict, do not silently reconcile them. Preserve the conflict or resolve it from evidence before writing the update.
 
-> **Mechanism:** the single-stream fast-path in `tadaLaunchPrepare` / `tadaLaunchKernel` / `tadaLaunchFinish` (gated on `scheduler->numStreams == 1 && !plan->persistent`) skipped the cross-stream event between `launchStream` and `handle->shared->deviceStream`. dumbModel hits this gate exactly. Kernel launched before deviceStream's IPC publish / scratch-buffer writes (the ones that populate `scratchBuf`) were visible to launchStream → `scratchBuf == NULL` in the kernel → stray pointer dereference → ring ready-flag read from garbage → thread spins forever.
+If the requested channel or audience materially changes the output and cannot be inferred, ask one focused question.
 
-### As a JIRA comment
+## Safety against information loss
 
-> **Status: Fixed pending merge.** Bug found, fix validated, PR up for review.
->
-> **Impact:** LLM-7B fine-tuning on 8 GPUs would hang every time it tried to evaluate the model — blocking the entire workload. Affects customers using dumbModel (a popular framework for training large models that don't fit on a single GPU), which means most large-model fine-tuning runs on the platform were exposed.
->
-> **What broke:** Our GPU communication library (Tada) skipped an internal synchronization step under a specific configuration that dumbModel happens to trigger. The GPUs ended up reading from an uninitialized buffer and got stuck waiting for a signal that would never arrive. The unsafe shortcut had been in the code for months but wasn't reached by any real workload until now.
->
-> **A previous fix attempt** added a defensive check that hid the symptom in some paths but left the underlying race in place. This new fix removes the unsafe shortcut entirely and tightens the safety check on the device side.
->
-> **Owner:** Alex (Tada team). PR org/platform#5751.
->
-> **Next steps:** code review → merge. Customers hitting this today can disable IPC registration as a temporary workaround.
+Before removing a technical detail, ask whether its removal changes any of these:
 
-### As a Slack post
+- the actual state
+- severity or affected scope
+- causal meaning
+- ownership
+- mitigation or workaround
+- risk
+- blocker or dependency
+- tracking continuity
+- next action or decision
 
-> **Tada hang affecting dumbModel LLM-7B fine-tuning is fixed pending merge.** (JIRA-12345)
->
-> - Skipped synchronization in the comms fast-path → GPUs read uninitialized memory → hang. Latent for months; dumbModel was the first workload to hit it.
-> - Owner: Alex, PR #5751 in review.
-> - Workaround until merge: disable IPC registration.
+If yes, preserve or translate it rather than stripping it.
 
-### As a standup note
+## Verification
 
-> Fixed Tada hang on dumbModel LLM-7B (JIRA-12345). Alex's PR #5751 in review. Workaround posted in the ticket; backport to v7.2 next.
+Before finalizing, confirm:
 
-What changed between channels: same diagnosis, same owner, same next step. JIRA gets every block. Slack drops "why now" and "previous fix attempt" — too much for the channel. Standup keeps just state + key + owner + next. None of them mention `scratchBuf` or `tadaLaunchPrepare`.
-
-## Rules
-
-- **Never invent facts** to make the rewrite cleaner. If the engineering source says "root cause unknown," the rewrite says "root cause unknown" — do not promote a speculation to a finding for narrative tidiness.
-- **Never strip a JIRA key, PR number, or customer/workload name** during de-jargoning. They're the cross-reference bridge — losing them breaks tracking.
-- **Never invent owners.** If the source doesn't name one, ask the user — don't guess from `git blame` or recent commits.
-- **Get sign-off before posting to JIRA.** Reuse the jira-check approval flow. Print-only output needs no approval.
-- **Never post to Slack, email, or any non-JIRA channel from this skill.** Hand the draft to the user; they post it.
-- **Stay out of advocacy.** This skill produces a status update, not a recommendation. If the user wants a recommendation memo, confirm before reframing.
+- the leadership version does not contradict the engineering source
+- uncertainty remains uncertainty
+- impact is expressed in user, workload, product, or delivery terms where possible
+- important ticket/PR/customer/workload references remain
+- owners are not invented
+- mechanism is understandable without unnecessary code identifiers
+- channel density matches where the update will be consumed
+- mitigation, risk, blocker, and next step appear only when supported and relevant
+- the rewrite reports status rather than smuggling in an unsolicited recommendation

@@ -1,116 +1,104 @@
 ---
 name: ownership-boundaries
-description: Architecture guidance for assigning state, behavior, side effects, data access, and dependencies to the narrowest meaningful owner. Trigger proactively when implementing or refactoring features with multiple components, modules, dialogs, screens, services, controllers, or workflows; when one parent/object accumulates unrelated state or behavior; when data or callbacks are passed through layers only to reach another owner; or when deciding whether logic should be shared, lifted, extracted, or kept local.
+description: Assign state, behavior, side effects, data access, and dependencies to the narrowest meaningful owner. Use when implementing or refactoring cooperating components, modules, services, controllers, or workflows, especially when deciding whether logic should stay local, be lifted, shared, or extracted.
 ---
 
 # Ownership Boundaries
 
-Keep behavior close to the thing that actually owns it.
+Put state, side effects, data access, and behavior at the narrowest meaningful ownership boundary.
 
-This skill is framework-agnostic. It applies to UI components, application modules, services, controllers, domain objects, and other cooperating units.
+This skill is framework-agnostic. It determines **who owns behavior**; framework-specific skills determine how that ownership is implemented.
 
-## Core rule
+## Ownership model
 
-> Put state, side effects, data access, and behavior at the narrowest meaningful ownership boundary.
+Before implementing, identify:
 
-Sharing logic does not automatically mean sharing ownership.
+1. **Owners** — the unit responsible for each behavior or lifecycle.
+2. **Shared contracts** — values or actions that genuinely require coordination across owners.
+3. **Reusable logic** — operations multiple owners may invoke independently.
 
-A reusable operation may be extracted without centralizing every invocation, lifecycle, or state instance into one parent.
+Do not default to the highest common ancestor, global state, or a central manager merely because multiple consumers need similar capabilities.
 
-## Before implementing
+Sharing logic does not imply sharing ownership.
 
-Identify:
+## Keep behavior local
 
-1. **Owners** — which component, module, service, or workflow is responsible for each behavior?
-2. **Shared contracts** — which data or actions genuinely need coordination across owners?
-3. **Reusable logic** — which operations should be extracted so multiple owners can invoke them independently?
-
-Do not default to the highest common ancestor or a single manager merely because several consumers need similar capabilities.
-
-## Ownership rules
-
-Prefer local ownership when a unit can operate independently.
-
-Keep with the owner:
+When a unit can operate independently, keep its concerns with that owner:
 
 - local state
-- lifecycle-driven effects
+- lifecycle-driven effects and cleanup
 - event handling
-- loading/error state
-- data fetching used only by that owner
-- validation specific to that workflow
-- mutation state specific to that workflow
-- cleanup and subscriptions tied to that owner's lifecycle
+- loading and error state
+- data access used only by that owner
+- workflow-specific validation
+- workflow-specific mutation state
+- subscriptions tied to that owner's lifecycle
 
-Lift or centralize only when coordination is actually required, such as:
+Lift or centralize only when coordination is real, such as:
 
-- multiple owners must observe the exact same changing state
-- an invariant must be enforced across owners
-- a shared transaction or workflow coordinates several units
+- multiple owners must observe the same changing state
+- an invariant spans owners
+- one transaction or workflow coordinates several units
 - cache identity or synchronization is intentionally shared
 - the platform or framework requires a higher-level owner
 
-## Reuse without accidental centralization
+## Reuse without centralization
 
-Separate **reusable logic** from **shared state**.
+Avoid duplicating the same behavior when it represents the same concept and is expected to evolve together.
 
-Good reuse often means extracting a hook, service, repository method, helper, or use case that independent owners call themselves.
+Extract reusable logic to the narrowest shared abstraction that preserves independent ownership.
 
-Do not fetch or compute in a parent solely so children can reuse the result if those children have independent lifecycles and do not require synchronized ownership.
+Do not abstract merely because two pieces of code currently look similar. Similar syntax is not necessarily shared responsibility.
 
-Do not create a central controller simply to avoid duplicate invocations of an already reusable operation.
+Sharing logic does not imply sharing state, lifecycle, or ownership.
 
-## Decomposition
+A hook, service, repository method, helper, or use case may be shared while each owner independently invokes it.
 
-Decompose by responsibility, workflow, lifecycle, and ownership — not arbitrary line counts.
+Do not fetch, compute, or mutate in a parent solely to make an operation reusable for otherwise independent children.
 
-Warning signs that a unit may own too much:
+Do not create a central controller merely to avoid repeated calls to an already reusable operation.
 
-- unrelated workflows keep adding state to the same parent or manager
-- effects exist only to support one nested child or sub-flow
-- callbacks are created in a parent and immediately relayed downward
-- data is loaded at a high level even though only one descendant consumes it
-- independent dialogs, screens, tabs, or services cannot operate without a central god object
-- changing one workflow requires understanding many unrelated states or effects
+## Decomposition signals
 
-A large cohesive unit can be healthier than a smaller unit that mixes unrelated ownership.
+Decompose by responsibility, workflow, lifecycle, and ownership rather than line count.
+
+Reconsider the boundary when:
+
+- unrelated workflows keep adding state to the same owner
+- effects exist only to support one nested workflow
+- callbacks are created high in the tree only to be relayed downward
+- data is loaded high in the tree for one descendant
+- independent dialogs, screens, tabs, modules, or services depend on a central god object
+- changing one workflow requires understanding unrelated state or effects
+
+A large cohesive owner can be healthier than several smaller units with mixed responsibility.
 
 ## Dependency direction
 
-Dependencies should point toward the owner that needs them.
+Dependencies should point toward the owner that uses them.
 
-Avoid pass-through layers that receive data, callbacks, or services only to forward them elsewhere. Prefer direct ownership or an intentional shared boundary when the framework permits it.
+Avoid pass-through layers that receive data, callbacks, or services only to forward them elsewhere when direct ownership or an intentional shared boundary is available.
 
 Do not introduce global state, context, service locators, singletons, or broad managers merely to avoid passing a small number of meaningful dependencies.
 
-## God objects and supercomponents
+A parent should coordinate children when coordination itself is its responsibility. It should not become the default home for every child's state, effects, queries, and handlers.
 
-Treat god objects, god services, and supercomponents as ownership smells, not merely size smells.
+## Composition
 
-A parent should coordinate children when coordination is its responsibility. It should not become the default home for every child's state, effects, queries, and handlers.
+- `scope-discipline` determines what may change.
+- `file-structure` determines where owned units live.
+- `minimalist` may reduce implementation size but must not use a smaller diff to justify incorrect ownership.
+- framework-specific ownership skills refine this policy for their runtime and lifecycle model.
+- for React component architecture, compose with `react-component-ownership`.
 
-Before finishing, ask:
+## Verification
 
-- Does each stateful behavior have a clear owner?
-- Are effects and lifecycle logic located with the workflow that requires them?
-- Is shared logic reusable without forcing shared state?
-- Is any parent or manager carrying behavior only for a child or sub-flow?
-- Are any dependencies being relayed through layers without meaningful use?
-- Can independent units operate independently where they should?
+Before completion, confirm:
 
-If not, reconsider the ownership boundary before declaring the implementation complete.
-
-## Framework-specific guidance
-
-When a framework-specific ownership skill exists, use it together with this skill.
-
-This skill determines **who should own the behavior**. Framework-specific skills determine **how to implement that ownership idiomatically**.
-
-For React component architecture, apply `react-component-ownership` together with this skill.
-
-## Interaction with other skills
-
-- `scope-discipline` governs what may change; this skill governs where in-scope behavior belongs.
-- `minimalist` should minimize the implementation without using a smaller diff as justification for bad ownership.
-- `file-structure` governs file organization; file boundaries should reinforce, not replace, responsibility boundaries.
-- framework-specific skills may refine lifecycle, state-management, dependency, and composition patterns.
+- each stateful behavior has a clear meaningful owner
+- lifecycle logic stays with the workflow that requires it
+- reusable logic is not mistaken for shared state
+- parents and managers do not carry behavior solely for independent descendants
+- dependencies are not relayed through meaningless layers
+- independent units can operate independently where they should
+- centralized ownership exists only for a real shared invariant, identity, transaction, lifecycle, or platform requirement

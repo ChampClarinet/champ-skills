@@ -1,6 +1,8 @@
 {
-  "name": "9arm-skills",
+  "name": "champ-skills",
   "skills": [
+    "./skills/engineering/skill-router",
+    "./skills/engineering/agent-orchestration",
     "./skills/engineering/debug-mantra",
     "./skills/engineering/post-mortem",
     "./skills/engineering/scrutinize",

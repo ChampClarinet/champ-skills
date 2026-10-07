@@ -1,70 +1,83 @@
 ---
 name: scrutinize
-description: Outsider-perspective end-to-end review of a plan, PR, or code change. First questions intent and whether a simpler/more elegant approach would achieve the same goal, then traces the actual code path (not just the diff) to verify the change does what it claims. Output is concise, actionable, and every call carries its rationale. Trigger on /scrutinize and proactively whenever the user asks to review, audit, sanity-check, or get a second opinion on a plan, PR, diff, design doc, or proposed code change.
+description: Outsider-perspective end-to-end review of a plan, PR, diff, or code change. Question whether the change should exist, consider simpler alternatives, trace the real path beyond the diff, and verify each claim with evidence. Use for reviews, audits, sanity checks, and second opinions.
 ---
 
 # Scrutinize
 
-Stand outside the change and ask whether it should exist at all, then verify it actually does what it claims end-to-end.
+Stand outside the change. Ask whether it should exist at all, then verify end to end that it does what it claims.
 
-## Operating stance
+## Stance
 
-- **Outsider.** Forget who wrote it and why they think it's right. Read the artifact cold.
-- **End-to-end, not diff-local.** The diff is the entry point, not the scope. Follow the call graph through real code paths.
-- **Prefer simpler solutions when possible.**
-- **Actionable, concise, with rationale.** Every finding states _what to change_, _why_, and _what evidence_ led you there. No filler, no restating the diff back.
+- **Outsider** — evaluate the artifact rather than defending its author's intent.
+- **End-to-end** — the diff is an entry point, not the execution boundary.
+- **Simpler when better** — always consider whether existing or smaller machinery solves the same problem.
+- **Evidence-backed** — every finding explains the consequence and evidence, not merely a preference.
 
-## Workflow
+## 1. Establish intent
 
-Run these in order. Do not skip ahead.
+State the intended outcome in one sentence.
 
-### 1. Intent — what is this actually trying to do?
+If the artifact is too underspecified to establish its goal, say what is missing before pretending to verify it.
 
-- State the goal in one sentence, in your own words. If you cannot, the artifact is underspecified — say so and stop.
-- Ask: **is there a simpler, smaller, or more elegant way to achieve the same goal?** Consider:
-  - Doing nothing (is the problem real / load-bearing?).
-  - Using something that already exists in the codebase instead of adding new surface.
-  - A smaller change that solves 90% of the goal with 10% of the risk.
-  - Solving it at a different layer (config vs code, framework vs app, build vs runtime).
-  - Does this introduce unnecessary complexity?
-- If a better alternative exists, name it explicitly with rationale. This is the most valuable thing you can output — surface it before the line-by-line review.
+Run one simpler-alternative pass:
 
-### 2. Trace — walk the actual code path
+- Is doing nothing valid because the problem is not real or load-bearing?
+- Does the repository already contain machinery that solves it?
+- Can a smaller change achieve the required outcome with less risk?
+- Does the problem belong at another layer such as configuration, framework, build, or runtime?
+- Is new complexity buying a concrete capability?
 
-- For each behavior the change claims, trace the path end-to-end through the real code, not just the lines in the diff:
-  - Entry point → call sites → branches taken → state mutated → exit / return / side effect.
-  - Include the unchanged code on either side of the diff. Bugs hide at the seams.
-- For a plan or design doc: trace the proposed flow against the existing system. Where does it touch reality? What does it assume that isn't true?
-- Note every place the trace surprises you (unexpected branch, dead code reached, state you didn't know existed). Surprises are signal.
+If a materially better alternative exists, surface it before lower-level findings.
 
-### 3. Verify — does it actually do what it claims?
+Skip this challenge only when the user explicitly asks not to question scope or approach.
 
-For each claim the change/plan makes, answer:
+## 2. Trace reality
 
-- **Does the code path you just traced actually produce that behavior?** Walk it explicitly. "It claims X. Path: A → B → C. At C, [observation]. Therefore [holds / doesn't hold]."
-- **What inputs / states would break it?** Edge cases, concurrent callers, error paths, partial failures, retries, empty/null/unicode/huge inputs, ordering assumptions.
-- **What does it silently change?** Performance, error semantics, observability, contract for other callers, on-disk / on-wire format.
-- **How is it tested?** Do the tests actually exercise the traced path, or do they pass while skipping it (mocks that hide the bug, asserts on intermediate state, happy path only)?
+For each claimed behavior, follow the actual relevant path beyond the changed lines:
 
-### 4. Report
+`entry → calls → branches → state/effects → observable result`
 
-Output one tight section per finding. Order by severity (blocker → major → minor → nit). For each:
+Inspect unchanged code at the seams when it affects the behavior.
 
-- **Finding** — one sentence, specific. Cite `file:line` when applicable.
-- **Why it matters** — the consequence, not the principle.
-- **Evidence** — the trace step or input that exposes it.
-- **Suggested change** — concrete, minimal.
+For plans and designs, trace the proposed flow against the existing system and identify assumptions that do not match reality.
 
-Close with a one-line verdict: ship / fix-then-ship / rework / reject — with the single biggest reason.
+Unexpected branches, ownership, state, or dead/reachable paths are evidence worth investigating.
 
-## Operating rules
+## 3. Verify claims
 
-- **No rubber-stamps.** "LGTM" is not an output. If you genuinely find nothing, say what you traced and what you checked, so the user can judge whether your review covered the surface they cared about.
-- **Cite or it didn't happen.** Every claim about the code references a specific path, file, or line. No vague "this might break under load."
-- **Distinguish claim from verification.** "The PR says X" and "I traced X and confirmed / refuted it" are different — keep them separate in the output.
-- **Always consider whether the change should exist at all.**
-- **One simpler-alternative pass is mandatory.** Even on small changes, spend one breath asking if the whole thing is necessary. Skip only if the user explicitly says "don't question scope."
-- **Don't pad with style nits when there's a structural problem.** If step 1 or step 2 surfaces a real issue, lead with it; defer nits or drop them.
-- **Prioritize structural issues over style nits.**
-- **Avoid unnecessary flattery.**
-- **Avoid unsupported certainty.**
+For each important claim, distinguish:
+
+- what the artifact says
+- what the traced path demonstrates
+
+Check relevant failure surfaces such as error paths, partial failure, retries, concurrency, ordering, empty or extreme inputs, and contract changes according to the actual change.
+
+Check silent effects on performance, error semantics, observability, callers, persistence, or wire formats when relevant.
+
+Verify that tests exercise the behavior being claimed rather than only an intermediate state or mocked path.
+
+Do not manufacture generic edge cases merely to make the review look exhaustive.
+
+## 4. Report
+
+Order findings by severity: blocker → major → minor → nit.
+
+For each finding provide:
+
+- **Finding** — specific issue and location when applicable
+- **Why it matters** — concrete consequence
+- **Evidence** — traced path, observed behavior, or reproducible condition
+- **Suggested change** — smallest useful correction
+
+Close with a concise verdict such as ship, fix-then-ship, rework, or reject, with the main reason.
+
+If no defect is found, state what paths and claims were actually checked rather than emitting a content-free LGTM.
+
+## Verification rules
+
+- Cite concrete code paths, files, lines, or other inspectable evidence for code claims when available.
+- Do not confuse a PR or plan's claim with independent verification.
+- Do not bury structural problems under style nits.
+- Do not add unsupported certainty.
+- Keep findings concise and actionable.

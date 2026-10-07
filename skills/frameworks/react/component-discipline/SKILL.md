@@ -1,452 +1,114 @@
 ---
 name: react-component-discipline
-description: React + TypeScript component guidance focused on maintainable component boundaries, explicit state ownership, readable JSX, modular architecture, and Tailwind/shadcn-friendly UI structure.
+description: Champ's React + TypeScript component defaults for declaration style, readable JSX, effects, hooks, shared UI, and state-management boundaries. Use when implementing or reviewing project-owned React components.
 ---
 
 # React Component Discipline
 
-Use this skill when creating, reviewing, or refactoring React components.
+Keep React code explicit, readable, TypeScript-first, and unsurprising.
 
-React code should be TypeScript-first, component-oriented, explicit, and easy to maintain.
+Repository-local explicit conventions override these defaults.
 
-## Core Principles
+## Component style
 
-- Use TypeScript for React code.
-- Prefer function components.
-- Prefer explicit component boundaries.
-- Prefer readable JSX over clever abstraction.
-- Prefer consistency over novelty.
-- Prefer descriptive state names such as `isLoading`, `hasError`, `isOpen`, `selectedId`.
-- Keep components focused on one clear responsibility.
-- Extract components for readability and reuse, not just to reduce line count.
-- Optimize for maintainability and predictable structure.
-- Prefer modular organization over generic dumping-ground folders.
+For project-owned components, prefer:
 
-## Component Declaration Style
+- function components
+- `FC<Props>` signatures
+- explicitly exported props interfaces
+- default export for the primary page/component when repository convention does not say otherwise
+- type-only imports where they improve clarity
+- descriptive state names such as `isLoading`, `hasError`, `isOpen`, and `selectedId`
 
-Prefer this component structure for project-owned React components:
+Do not turn these syntax preferences into reasons for broad churn in existing code.
 
-```tsx
-import { type FC } from "react";
+`react-component-ownership` owns when a responsibility deserves its own component. `file-structure` owns one-component-per-file and naming policy.
 
-export interface UserCardProps {}
+## JSX
 
-const UserCard: FC<UserCardProps> = (props) => {
-  return <div></div>;
-};
+Keep JSX declarative and easy to scan.
 
-export default UserCard;
-```
+Move substantial business logic or transformations out of render expressions when they obscure the UI.
 
-## Component Style Rules
+Avoid deeply nested ternaries and abstractions that hide rather than clarify rendered behavior.
 
-- Prefer `FC<Props>` component signatures for consistency across the project.
-- Export props interfaces explicitly.
-- Keep component naming consistent with filenames.
-- Prefer one primary component per file.
-- Prefer default export for primary page/component files unless project conventions differ.
-- Keep helper types and helper functions close to the component when they are tightly coupled.
+Extract responsibilities, not markup merely to shorten a file.
 
-## Import Style
+## State and effects
 
-Prefer type-only imports when possible:
+Use the narrowest correct owner for state.
 
-```tsx
-import { type FC } from "react";
-```
+Do not introduce global state for component-local UI behavior.
 
-to reduce runtime imports and improve clarity.
+Use effects for synchronization with external systems such as subscriptions, timers, browser APIs, storage, network synchronization, or imperative libraries.
 
-## Component Boundaries
+Do not use effects to derive values that can be rendered directly or to simulate business workflows that should be explicit events/state transitions.
 
-Project-owned components should usually follow one component per file.
+Compose ownership decisions with `ownership-boundaries`; use Redux-specific policy only when project-level state is actually involved.
 
-A component file may contain:
+## Hooks
 
-- the exported component
-- small private helper functions
-- local constants
-- local interfaces/types
-- tiny private subcomponents tightly coupled to the parent component
+Create custom hooks when they own a coherent reusable stateful/effectful behavior or make a meaningful concern easier to understand.
 
-Move subcomponents into separate files when they:
+Do not create hooks merely to move code out of sight.
 
-- are reused elsewhere
-- become large enough to distract from the main component
-- own meaningful state or effects
-- need independent testing
-- represent a distinct UI concept
+A hook should expose clear inputs/outputs and should not hide surprising side effects.
 
-Avoid files that become component dumping grounds.
+Reuse does not imply moving state ownership into the hook when callers should own independent lifecycles.
 
-## Project Organization
+## TypeScript
 
-Prefer module-based organization over generic feature naming.
+Keep component contracts typed.
 
-Use `modules/` for domain or product areas:
+Prefer interfaces for ordinary component props under Champ defaults; use a type alias when unions, mapped/conditional composition, or another shape makes it clearer.
 
-```txt
-modules/
-  auth/
-  user/
-  billing/
-```
+Avoid `any` except at a deliberate boundary with a concrete reason.
 
-Inside a module, organize by responsibility:
+Keep component-local types/helpers colocated when they have no independent ownership; `file-structure` owns extraction policy.
 
-```txt
-modules/
-  auth/
-    components/
-    hooks/
-    services/
-    types/
-    utils/
-```
+## Tailwind, shadcn, and Radix
 
-Prefer atomic-style component grouping for shared UI components:
+Use Tailwind/shadcn/Radix according to repository convention.
 
-```txt
-components/
-  atoms/
-  molecules/
-  organisms/
-  templates/
-```
+Treat shadcn components as project-owned source while preserving upstream structure when compatibility or future comparison/update value matters.
 
-Use atomic categories pragmatically.
+Do not mechanically rewrite shadcn internals without a product or maintainability reason.
 
-Do not force every component into strict atomic theory if a simpler structure is clearer.
-
-## File Naming
-
-Prefer lowercase dash-case filenames:
-
-```txt
-user-profile-card.tsx
-```
-
-Keep filenames aligned with component names and responsibilities.
-
-Use existing project conventions when already established.
-
-## TypeScript Usage
-
-Use TypeScript for all React code.
-
-Prefer explicit props typing:
-
-```tsx
-import { type FC } from "react";
-
-export interface UserCardProps {
-  name: string;
-  isActive?: boolean;
-}
-
-const UserCard: FC<UserCardProps> = ({ name, isActive = false }) => {
-  return <div>{name}</div>;
-};
-
-export default UserCard;
-```
-
-Prefer interfaces for component props unless a type alias is clearer for:
-
-- unions
-- intersections
-- utility types
-- mapped types
-
-Avoid `any` unless there is a deliberate boundary and a comment explaining why.
-
-Avoid enums for simple UI states.
-
-Prefer literal unions:
-
-```ts
-type Status = "idle" | "loading" | "success" | "error";
-```
-
-## TypeScript File Separation
-
-Keep small component-local types, constants, and helpers inside the component file when they are tightly coupled and do not distract from readability.
-
-Extract TypeScript files when they are:
-
-- reused by multiple files
-- large enough to distract from the component
-- domain-level concepts
-- API/data contracts
-- validation schemas
-- shared constants
-- shared helpers
-
-Common extraction patterns:
-
-```txt
-user-card.tsx
-user-card.types.ts
-user-card.constants.ts
-user-card.helpers.ts
-```
-
-or module-level:
-
-```txt
-modules/
-  auth/
-    auth.types.ts
-    auth.constants.ts
-    auth.helpers.ts
-```
-
-Avoid dumping unrelated exports into broad files like:
-
-```txt
-types.ts
-utils.ts
-constants.ts
-```
-
-unless they are small, cohesive, and clearly scoped to the module.
-
-## JSX Discipline
-
-Keep JSX declarative and readable.
-
-Prefer:
-
-- clear conditional rendering
-- small derived variables for readability
-- descriptive component names
-- simple composition
-
-Avoid:
-
-- deeply nested ternaries
-- large inline business logic inside JSX
-- complex data transformations directly inside render
-- clever abstractions that hide UI behavior
-- giant render blocks with mixed responsibilities
-
-## State Ownership
-
-Keep state as local as possible.
-
-Use local component state for:
-
-- UI toggles
-- controlled inputs
-- local dialog/menu state
-- transient interaction state
-- purely visual UI behavior
-
-Lift state only when multiple components need coordination.
-
-Do not introduce global state for one component's local UI behavior.
-
-Prefer simpler local state before introducing external state management.
-
-## Effects Discipline
-
-Use effects intentionally.
-
-Effects are for synchronizing with external systems such as:
-
-- browser APIs
-- subscriptions
-- timers
-- imperative third-party libraries
-- network/storage synchronization when required
-
-Avoid using `useEffect` to derive state that can be computed during render.
-
-Avoid effect chains that simulate business workflows.
-
-Prefer:
-
-- derived values
-- explicit event handlers
-- framework-native async/data patterns
-
-over effect-heavy orchestration.
-
-## Hooks Discipline
-
-Prefer custom hooks when logic is:
-
-- reused
-- stateful
-- effect-heavy
-- difficult to read inline
-
-Custom hooks should usually:
-
-- encapsulate one concern
-- expose clear inputs/outputs
-- avoid hidden side effects
-- avoid becoming mini-frameworks
-
-Avoid creating hooks solely to move code around mechanically.
-
-## Tailwind / shadcn / Radix
-
-Current preferred UI stack:
-
-- Tailwind CSS
-- shadcn/ui
-- Radix UI when needed
-
-Use Tailwind for layout and styling when it keeps markup readable.
-
-Use shadcn/ui as owned source code, not untouchable vendor code.
-
-Preserve shadcn/ui structure when:
-
-- maintaining upstream compatibility
-- preserving component composition
-- reducing unnecessary churn
-
-Do not mechanically rewrite shadcn/ui internals unless there is a clear maintainability or product reason.
-
-## Styling Discipline
-
-Prefer:
-
-- responsive mobile-first layouts
-- readable utility composition
-- consistent spacing
-- shared reusable variants when patterns repeat
-- project design tokens when available
-
-Avoid:
-
-- huge unreadable class strings
-- duplicated variant logic everywhere
-- random spacing systems
-- premature design-system abstraction before patterns stabilize
+`layout-system` owns Grid/Flex, spacing hierarchy, positioning, overflow, and responsive verification.
 
 ## Performance
 
-Optimize based on observed problems, not fear.
+Do not scatter `memo`, `useMemo`, or `useCallback` as ritual.
 
-Prefer:
+Add memoization or splitting when there is measured evidence, an observable expensive path, or a clear identity/stability contract that requires it.
 
-- stable keys
-- reasonable component boundaries
-- avoiding unnecessary global state
-- lazy loading when appropriate
-- splitting expensive areas intentionally
-
-Do not scatter:
-
-- `memo`
-- `useMemo`
-- `useCallback`
-
-everywhere by default.
-
-Memoization should solve a measured or observable problem.
+Use stable keys that represent item identity.
 
 ## Accessibility
 
-Prefer accessible defaults.
+Prefer semantic HTML and native interaction semantics.
 
-Use semantic HTML when possible.
+Preserve labels, keyboard access, visible focus, and accessible control behavior when composing custom UI primitives.
 
-Prefer:
+## Composition
 
-- proper button elements
-- labels for inputs
-- keyboard-accessible interactions
-- visible focus states
+- `react-component-ownership`: component responsibility boundaries
+- `ownership-boundaries`: general state/behavior ownership
+- `file-structure`: files and naming
+- `layout-system`: structural UI layout
+- `typescript-type-discipline`: non-trivial type policy
+- framework adapter: runtime-specific rendering/data behavior
 
-Do not sacrifice accessibility for visual cleverness.
+Do not duplicate those canonical policies here.
 
-## Review Checklist
+## Verification
 
-When reviewing React code, ask:
+For touched React code, verify:
 
-- Is the component responsibility clear?
-- Is state owned at the correct level?
-- Can this be simpler?
-- Is JSX readable?
-- Are effects actually necessary?
-- Is TypeScript helping instead of being bypassed?
-- Is styling consistent with the project?
-- Is this abstraction solving a repeated problem?
-- Would another developer understand this quickly?
-
-## Shared Components vs Modules
-
-Use `components/` for reusable cross-module UI building blocks.
-
-Examples:
-
-```txt
-components/
-  atoms/
-  molecules/
-  organisms/
-  templates/
-```
-
-Use `modules/` for domain/product/business areas.
-
-Examples:
-
-```txt
-modules/
-  auth/
-  profile/
-  checkout/
-  dashboard/
-```
-
-A module may contain:
-
-```txt
-modules/
-  auth/
-    components/
-    hooks/
-    services/
-    types/
-    utils/
-```
-
-Module internals are scoped to that domain unless intentionally shared globally.
-
-## State Management Philosophy
-
-Prefer state ownership at the smallest reasonable scope.
-
-Use:
-
-- local component state for component-local behavior
-- React Context for module/subtree-level coordination
-- Redux Toolkit for project-level shared application state
-
-Do not automatically promote local or module state into Redux.
-
-Prefer React Context when:
-
-- the state belongs to one module/subtree
-- lifecycle is tied to a subtree
-- effects/subscriptions are local
-- the workflow is UI-heavy
-- global visibility is unnecessary
-
-Prefer Redux Toolkit when:
-
-- state is project-level
-- multiple distant modules depend on it
-- debugging/replayability matters
-- the workflow benefits from centralized predictable updates
-
-Avoid turning Redux into a global event bus.
-
-Avoid Context spaghetti with deeply nested unclear providers.
-
-Choose the smallest ownership boundary that keeps the system maintainable.
+- component syntax follows repository convention or these defaults
+- JSX still exposes behavior clearly
+- state is owned at the narrowest correct boundary
+- effects synchronize rather than secretly orchestrate
+- hooks represent coherent behavior
+- memoization has a concrete reason
+- accessibility semantics survive composition

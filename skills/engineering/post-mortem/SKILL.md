@@ -1,179 +1,127 @@
 ---
 name: post-mortem
-description: Write the canonical engineering record of a fixed bug — root cause, mechanism, fix, validation, and how it slipped through. Engineer-audience, code identifiers welcome. Use after a debug session lands a fix, before closing the ticket. Trigger on /post-mortem, when the user says "write the post-mortem / postmortem / RCA / root cause analysis", "document this fix", "write up the root cause", "close out this bug with a writeup", or hands you a fixed-and-validated bug and asks for the writeup.
+description: Write the canonical engineering record of a validated bug fix: symptom, root-cause mechanism, fix, validation, escape path, and durable lessons. Use after debugging when the fix and cause are established, or when the user asks for an RCA or engineering write-up.
 ---
 
 # Post-mortem
 
-The canonical engineering record of a bug fix. Written **after** debugging lands a real fix, **for** other engineers (and future-you, who will have forgotten everything in 6 months). Code identifiers are welcome here — this is the artifact that lets the next person recover the mental model fast.
+Record the engineering truth needed to understand the failure, recover the mental model, and avoid repeating the same class of bug.
 
-For the up-the-org version of this same content, hand the finished post-mortem to [`management-talk`](../../productivity/management-talk/SKILL.md). They compose: post-mortem owns the engineering truth, management-talk reframes it for leadership.
+Use `management-talk` separately when the same facts need a leadership-facing reframe.
 
-## When to invoke
+## Preconditions
 
-- "/post-mortem"
-- "write the post-mortem / postmortem / RCA / root-cause analysis"
-- "document this fix" / "write up the root cause" / "close out this bug with a writeup"
-- After a debug session has clearly landed a fix, proactively offer to draft one.
+Do not present a hypothesis as a completed post-mortem.
 
-## When NOT to use
+Before writing a final post-mortem, require evidence for:
 
-- **Bug not fixed yet, or fix not validated.** A post-mortem of a hypothesis is misleading. Refuse and tell the user what's missing.
-- **Customer-visible outage / incident.** Those need a separate incident report (timeline, blast radius, paging history, comms). This skill is bug-fix scope. Flag and confirm before producing one.
-- **Trivial fix** (typo, obvious one-liner). The PR description is the record. Don't manufacture ceremony.
+- the observed failure or strongest available failure signal
+- the root-cause mechanism
+- the implemented fix
+- validation that the fix addresses the failure
 
-## Required inputs — refuse to draft without these
+A deterministic local reproducer is valuable but not mandatory. When one is unavailable, use the strongest production, integration, trace, log, or test evidence available and state the limitation explicitly.
 
-Before writing a single line, confirm all four. If any are missing, list what's missing and stop:
+If root cause, fix, or validation is still unresolved, use `debug-mantra` instead of manufacturing a completed RCA.
 
-- [ ] Reliable repro exists
-- [ ] Root cause is known
-- [ ] Fix is identified
-- [ ] Fix is validated
+Trivial fixes do not require a post-mortem unless the user asks for one or the failure exposes a reusable lesson.
 
-If information is missing:
+For a customer-visible incident or outage, do not pretend this bug-fix record replaces incident-specific timeline, impact, response, and communication artifacts.
 
-- explicitly list what is missing
-- avoid inventing details
-- draft only sections supported by evidence
+## Required engineering record
 
-These map directly to `debug-mantra` steps 1–4. If you came in via `debug-mantra`, the breadcrumb ledger from step 4 is your raw material — pull from it.
+Adapt the presentation to the destination, but preserve these facts.
 
-## Structure
+### Summary
 
-Use these blocks in this order. **Summary, Root cause, Fix, and Validation are mandatory.** The rest are conditional but usually present.
+State what failed, the user or workload consequence, the root cause, and what fixed it.
 
-### 1. Summary _(mandatory)_
+### Symptom and evidence
 
-One paragraph. What broke, in user/workload terms. What fixed it, in one sentence. JIRA key, PR number, owner. A reader who stops here should have the right answer.
+Record what was actually observed: error, test failure, log, trace, workload behavior, performance signal, or customer report.
 
-### 2. Symptom
+Distinguish direct evidence from inference.
 
-What was actually observed. Test output, error message, log line, perf number, customer report. Concrete identifiers — don't paraphrase the failure mode.
+### Root cause and mechanism
 
-### 3. Root cause _(mandatory)_
+Explain the actual failure mechanism end to end.
 
-The actual bug mechanism. **Code identifiers welcome and expected** — function names, file paths, struct fields, branch conditions, commit SHAs of the offending change. Walk the cause chain end-to-end. This is the most expensive section and the reason the post-mortem exists at all. Future-you will live or die by how clearly you write this.
+Use concrete code identifiers, paths, conditions, state transitions, configuration, or commits when they materially help another engineer locate and understand the failure.
 
-### 4. Why it produced the symptom
+Connect the cause to the visible symptom. Do not stop at the first bad state if an earlier mechanism produced it.
 
-Link the root cause to the symptom. Often non-obvious — the bug is in `tadaLaunchPrepare` but the visible failure is a customer training run hanging hours later. Walk the chain so a reader who only knows the symptom can connect it back to the cause without re-deriving it.
+### Fix
 
-### 5. Fix _(mandatory)_
+State what changed and why it addresses the root cause rather than merely suppressing the symptom.
 
-What changed and **why this change addresses the root cause** rather than hiding the symptom. Link to PR / commit. If a previous fix attempt papered over the symptom, name it and explain what was wrong with it — that history is part of the cause.
+Record relevant failed or partial prior fixes when they explain the mechanism or prevent the same mistake from recurring.
 
-### 6. How it was found
+### Validation
 
-Short. The debugging path:
+State how the original failure signal, or the closest available equivalent, was checked after the fix.
 
-- What repro made it deterministic.
-- What tools cracked it (debugger, source tracing, knob enumeration, in-code instrumentation — the `debug-mantra` step 2 cascade).
-- Hypotheses tried and rejected, with the one-line reason each was rejected. (Pull from the breadcrumb ledger.)
-- The single experiment that confirmed the cause.
+Record regression coverage and the actual scope of validation. Do not imply configurations, workloads, browsers, devices, or environments were tested when they were not.
 
-This section is for the next debugger — make it learnable.
+### Escape path
 
-### 7. Why it slipped through
+When useful, explain why existing tests, review, CI, monitoring, workload coverage, assumptions, or architecture allowed the bug through.
 
-What allowed this bug to reach the branch / release / customer. Pick the real reason:
+Describe the system gap, not a person to blame.
 
-- CI gap (no test exercises this path / configuration).
-- Latent code (correct when written, broken by a later change in a different file).
-- Workload gap (no real workload reached this code path until now).
-- Incomplete prior fix (defensive check hid the symptom; root cause untouched).
-- Review miss (the change was reviewable; the implication wasn't).
+### Durable follow-up
 
-If the honest answer is "no good reason — we should have caught this," say so. **Blameless** — describe the gap, not the person.
+Add follow-up work only when it prevents recurrence, closes an observed detection gap, or captures a durable architectural lesson.
 
-### 8. Validation _(mandatory)_
+Do not manufacture action items for ceremony. Include owner or tracking identifiers only when known or required by the destination.
 
-How we know the fix works. Concrete:
+## Debugging path
 
-- Original failing test now passes (test name, link).
-- Customer workload now completes (workload identifier, run link).
-- Perf regression resolved (number before, number after).
-- Stress / soak / fuzz run completed clean (duration, scale).
-- Other affected configurations / workloads also tested.
+Include the debugging path only when it teaches something reusable or explains confidence in the diagnosis.
 
-If you only validated one configuration, say so explicitly — _"validated on Llama-2-70B / 8 GPUs / DeepSpeed; not retested on other workloads."_ Don't imply broader coverage than you actually have.
+Useful details include:
 
-### 9. Action items / follow-ups
+- the evidence that narrowed the search
+- important hypotheses that were falsified
+- the experiment or observation that confirmed the mechanism
+- misleading symptoms or failed fixes worth avoiding next time
 
-Concrete next-steps that aren't in the fix PR itself. Each item: what + owner + tracking artifact.
+Do not turn the post-mortem into a transcript of the debugging session or expose private chain-of-thought.
 
-- Regression test added at \<seam\>. (Owner, test name.)
-- Refactor to prevent class of bug. (Owner, ticket.)
-- CI gap closed: \<new check\>. (Owner, PR.)
-- Doc / runbook updated. (Owner, link.)
-- Related ticket filed for \<adjacent issue you noticed\>. (Owner, key.)
+## Durable knowledge
 
-If there are no action items, write _"None — the fix is sufficient and no class-of-bug follow-up is warranted."_ Don't manufacture action items to look thorough.
+Promote information beyond the post-mortem when the lesson has ongoing value.
+
+Examples include:
+
+- regression tests for the failure seam
+- architecture or ownership rules
+- CI or monitoring checks
+- runbook or operational knowledge
+- reusable debugging evidence
+- a repository-local rule that should prevent the class of bug
+
+The post-mortem records what happened. The appropriate permanent artifact should encode what the system should remember.
 
 ## Tone
 
-- Code identifiers are first-class.
-- Mechanism over narrative.
-- Use active voice and concrete subjects.
-- Avoid unsupported hedging.
-- If uncertainty exists, state it explicitly.
-- Be blameless.
-- Do not invent validation coverage.
+Write for engineers.
 
-## Output flow
+Prefer mechanism over narrative, concrete identifiers over vague summaries, and evidence over confidence language.
 
-1. **Confirm all four required inputs are satisfied.** If any are missing, list them and stop. Do not draft.
-2. Confirm output destination:
+Be blameless. State uncertainty and validation limits explicitly. Never invent root cause, ownership, links, validation, or follow-up work.
 
-- JIRA comment
-- PR description
-- markdown document
-- internal wiki
+## Verification
 
-3. **Produce the draft** as a single chat block.
-4. **Sign-off before posting.** Ask for review before posting externally.
-5. **Offer the management-talk handoff:** Optionally provide a leadership-friendly version.
+Before treating the record as complete, confirm:
 
-## Worked example — Tada hang in dumbModel (JIRA-12345)
+- root cause is established rather than merely suspected
+- the cause-to-symptom chain is understandable
+- the fix addresses the mechanism rather than only the symptom
+- validation includes the original failure signal or closest available equivalent
+- validation scope and uncertainty are stated honestly
+- useful code identifiers remain searchable
+- escape-path claims are evidence-based
+- follow-ups exist only when they prevent a concrete recurrence or detection failure
+- durable lessons are promoted when another artifact should own them
 
-> **Summary.** Tada's single-stream fast-path skipped a required cross-stream synchronization, causing kernels to launch before scratch-buffer writes were visible. Triggered reliably by dumbModel on LLM-7B fine-tuning, hanging the workload at every eval step. Fixed by removing the unsafe fast-path and tightening a device-side check. JIRA-12345, PR org/platform#5751, owner Alex (Tada team).
->
-> **Symptom.** 8-GPU LLM-7B fine-tuning under dumbModel hung indefinitely at the first eval step. No error, no timeout — busy-spin in `tadaKernel_AllReduce_f32_RING`. Reproduced on every run.
->
-> **Root cause.** The single-stream fast-path in `tadaLaunchPrepare` / `tadaLaunchKernel` / `tadaLaunchFinish` (gated on `scheduler->numStreams == 1 && !plan->persistent`) skipped the cross-stream event between `launchStream` and `handle->shared->deviceStream`. dumbModel hits this gate exactly. The kernel was launched before the IPC publish / scratch-buffer writes on `deviceStream` (which populate `scratchBuf`) were visible to `launchStream`. In the kernel: `scratchBuf == NULL` → stray pointer dereference → ring ready-flag read from garbage memory → thread spins forever waiting for a ready signal that will never arrive.
->
-> **Why it produced the symptom.** The hang lives in the all-reduce ring waitloop, which is the last visible thing in the call stack — but the actual bug is at launch-prep, several frames earlier. The skipped sync is silent until a workload triggers the exact gate (single-stream, non-persistent), and dumbModel's reduce-scatter pattern hits it at every eval step.
->
-> **Fix.** PR #5751 removes the single-stream fast-path entirely (the saving was negligible vs. the safety it bypassed) and adds a device-side null check on `scratchBuf` before dereference, so the same class of bug fails loudly instead of silently spinning. A previous attempt (PR #5612) added a host-side defensive check after IPC publish that hid the symptom in some paths but left the underlying race in place — that change is also reverted.
->
-> **How it was found.** Reproducer narrowed from "8-GPU LLM-7B hangs sometimes" to a deterministic 30s repro by pinning to a single eval step on a 2-GPU subset. Initial hypothesis: kernel launch ordering on `launchStream`. Disproved by the debugger — the kernel was correctly enqueued. Second hypothesis: scratch-buffer init race. Confirmed by adding `[DBG-7af3]` instrumentation in `tadaLaunchPrepare` printing `scratchBuf` and a `deviceStream` event-record timestamp; the launch happened before the publish completed. Single experiment that nailed it: forcing `numStreams = 2` made the bug disappear, isolating the gate.
->
-> **Why it slipped through.** Latent code path. The single-stream fast-path was added in March under the assumption that dumbModel paths always took the multi-stream route. That assumption was true at the time. A May change to dumbModel's launcher began collapsing eval steps to a single stream — at which point the gate flipped. Tada's CI did not exercise the single-stream + IPC + scratch-buffer combination; the customer workload was the first to hit it.
->
-> **Validation.** Original LLM-7B / 8-GPU / dumbModel workload now completes a full eval pass cleanly (3 consecutive 2-hour runs). `tada-tests` `all_reduce_perf` regression suite green. Soak run: 6 hours on 8 GPUs, no hang. Not retested on other model sizes or non-dumbModel workloads — both go through the multi-stream path and were never affected.
->
-> **Action items.**
->
-> - Regression test added: `tests/single_stream_ipc_publish_test.cpp` exercising the previously-uncovered gate. (Alex, merged in PR #5751.)
-> - CI gap: add a single-stream + IPC matrix entry to nightly. (Alex, JIRA-12346.)
-> - Doc update: Tada launch-fast-path invariants documented in `docs/launch_synchronization.md`. (Alex, PR #5752.)
-> - Related: audit other `numStreams == 1` fast-paths for the same class of bug. (Filed as JIRA-12347.)
-
-What this post-mortem does that the management-talk version didn't:
-
-- Names every code identifier (`tadaLaunchPrepare`, `scratchBuf`, `numStreams`, `handle->shared->deviceStream`).
-- Walks the cause chain end-to-end so the reader can grep their way to the offending lines.
-- Names the _prior fix attempt_ (PR #5612) and what was wrong with it.
-- Documents the _exact experiment_ that nailed the cause (`numStreams = 2` made it disappear).
-- States validation coverage honestly — "not retested on other model sizes" is information, not a hole.
-- Action items have owners and tracking artifacts.
-
-## Rules
-
-- **Refuse to draft without all four required inputs.** A post-mortem of a hypothesis is worse than no post-mortem.
-- **Never invent root cause, owner, validation runs, or action items.** If a section's facts aren't there, ask. Don't fill the gap with plausible prose.
-- **Never strip code identifiers** in the engineering record. They are the index. The leadership reframe is `management-talk`'s job, not yours.
-- **Blameless.** Describe gaps and bugs, never people.
-- **State validation coverage honestly.** If you only tested one config, say so. Implying broader coverage is the failure mode that breeds repeat regressions.
-- **Get sign-off before posting to JIRA.** Print-only output needs no approval. Never post to non-JIRA destinations from this skill.
-- **One iteration is normal, three is a smell.** If the user is still revising on the third pass, ask what specific section is wrong — don't keep tweaking blindly.
+If any required fact is unsupported, mark it unresolved rather than filling the gap with plausible prose.

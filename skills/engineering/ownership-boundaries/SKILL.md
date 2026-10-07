@@ -44,7 +44,13 @@ Lift or centralize only when coordination is real, such as:
 
 ## Reuse without centralization
 
-Extract reusable operations without centralizing unrelated lifecycle or state.
+Avoid duplicating the same behavior when it represents the same concept and is expected to evolve together.
+
+Extract reusable logic to the narrowest shared abstraction that preserves independent ownership.
+
+Do not abstract merely because two pieces of code currently look similar. Similar syntax is not necessarily shared responsibility.
+
+Sharing logic does not imply sharing state, lifecycle, or ownership.
 
 A hook, service, repository method, helper, or use case may be shared while each owner independently invokes it.
 

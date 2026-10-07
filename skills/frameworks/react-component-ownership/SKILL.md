@@ -47,6 +47,28 @@ Performance may justify an additional boundary when profiling or a clear render/
 
 `file-structure` owns the physical file policy after a component boundary is justified.
 
+## Hierarchical decomposition
+
+For large pages or features, prefer a hierarchy of meaningful responsibility zones:
+
+page → zones → feature units → smaller owned pieces
+
+Apply the same ownership test recursively. A top-level component
+should primarily compose and coordinate major zones rather than
+implement their unrelated internal workflows.
+
+Do not flatten a feature merely because all UI belongs to one route,
+and do not split trivial markup that owns no meaningful responsibility.
+
+## Workflow units
+
+A dialog, form, tab, table, or similar workflow-oriented unit should
+normally own the state, data operations, validation, and side effects
+used only by that workflow.
+
+Externalize them only when another owner genuinely coordinates the
+same value, transaction, identity, or lifecycle.
+
 ## Props and dependency flow
 
 Props should express meaningful parent-child contracts.

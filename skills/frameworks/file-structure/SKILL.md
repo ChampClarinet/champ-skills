@@ -51,7 +51,11 @@ One component per file does not mean one declaration per file.
 
 ## TypeScript / TSX naming
 
-For project-owned TypeScript and TSX, use lowercase `kebab-case` for the subject. Use semantic dot-role segments when they improve navigation.
+These rules apply to project-owned TypeScript and TSX files. Repository-local explicit naming conventions override them.
+
+Use lowercase `kebab-case` for the subject name.
+
+Use `-` inside a multi-word subject. Use `.` only to express a meaningful role or artifact kind.
 
 Examples:
 
@@ -59,10 +63,26 @@ Examples:
 stock.card.tsx
 stock.table.tsx
 create-stock.form.tsx
-borrow.dialog.tsx
+create-stock.dialog.tsx
+stock-transaction.table.tsx
+employee-selector.form.tsx
 summary-section.tsx
 ```
 
+The filename does not need to mirror the PascalCase identifier literally:
+
+```text
+stock.card.tsx        → StockCard
+create-stock.form.tsx → CreateStockForm
+summary-section.tsx   → SummarySection
+```
+
+Useful semantic roles include `.card`, `.table`, `.form`, and `.dialog`. Use another role when it clearly improves navigation.
+Use `.hook` only when it matches the repository's existing convention.
+Do not force a dot-role suffix when the subject itself is already clear. `summary-section.tsx` is valid.
+
+Avoid `snake_case` filenames.
+Avoid vague names such as `component.tsx`, `item.tsx`, `helper.ts`, `misc.ts`, or `utils.ts` when a specific subject-and-role name is available.
 Do not apply this naming policy to generated/vendor files or unrelated languages.
 
 ## Logical folders and entrypoints

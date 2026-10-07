@@ -1,104 +1,73 @@
 ---
 name: tooling-feedback
-description: Treat compiler, type-checker, linter, language-server, framework-plugin, and editor diagnostics as actionable feedback on touched code. Trigger proactively when modifying code that produces warnings, deprecations, canonicalization suggestions, type diagnostics, lint findings, or framework/tooling recommendations; fix relevant warnings without turning the task into repository-wide cleanup.
+description: Treat compiler, type-checker, linter, language-server, framework-plugin, and editor diagnostics as actionable feedback on touched code. Use when modified code produces warnings, deprecations, canonicalization suggestions, type diagnostics, lint findings, or framework/tooling recommendations.
 ---
 
 # Tooling Feedback
 
-Tooling feedback is part of implementation quality, not decoration.
+Leave touched code clean of actionable tooling diagnostics when they can be resolved safely without changing the requested behavior.
 
-Warnings from the active compiler, type checker, linter, language server, framework plugin, and editor integrations should be inspected when they affect code being changed.
+A warning is evidence to inspect, not an instruction to obey mechanically.
 
-## Core rule
+## In-scope diagnostics
 
-> Leave touched code clean of actionable tooling warnings when they can be fixed safely without changing the requested behavior.
+Address:
 
-Do not ignore a warning merely because the code still compiles or runs.
+- diagnostics introduced by the current change
+- existing diagnostics on materially modified code when the correction is local and behavior-preserving
+- authoritative deprecation replacements
+- canonical syntax or API replacements recommended by the active language or framework tooling
+- straightforward type or lint findings on the touched surface
 
-## What to fix
+Do not turn a local task into repository-wide warning cleanup. Unrelated diagnostics remain outside scope unless the user opts into broader cleanup.
 
-Fix:
+Compose with `scope-discipline` for the exact change boundary.
 
-- warnings introduced by the current change
-- existing warnings on lines or code paths materially modified by the task when the fix is local and behavior-preserving
-- explicit deprecation replacements recommended by authoritative tooling
-- canonical syntax or API replacements recommended by the framework or language tooling
-- straightforward type or lint issues in the touched surface
+## Evaluate before applying
 
-Examples include:
+Before accepting a tooling suggestion, determine whether it is valid for the repository's active toolchain and preserves intended behavior.
 
-- a Tailwind language-service canonical-class suggestion such as replacing `break-words` with `wrap-break-word`
-- a TypeScript deprecation warning with a documented replacement
-- a React lint warning caused by a changed dependency list
-- a framework plugin warning about a touched API usage
+Do not mechanically apply suggestions that:
 
-## Scope boundary
-
-Do not turn a local task into repository-wide warning cleanup.
-
-If the same warning exists in unrelated files or untouched areas:
-
-1. leave those areas unchanged by default
-2. complete the requested task
-3. optionally offer a separate cleanup if it is worthwhile
-
-A warning outside the touched surface is not automatically in scope.
-
-## Safety
-
-Before applying a suggested fix, confirm that it is behavior-preserving or required for correctness.
-
-Do not mechanically accept tooling suggestions when they:
-
-- change runtime behavior unexpectedly
-- alter public contracts
-- require broad migrations
-- conflict with repository conventions
-- are known false positives
+- change runtime behavior or public contracts
+- require broad migration
+- conflict with explicit repository conventions
+- are false positives
 - depend on an uncertain tool or framework version
 
-When the suggestion is ambiguous, verify against the active toolchain or framework documentation before changing behavior.
+When validity depends on version or framework behavior, verify against the active toolchain or authoritative documentation.
 
-## Safe suppression fallback
+Framework-specific skills determine the idiomatic replacement when relevant.
 
-If resolving a warning would change intended behavior, introduce meaningful regression risk, or require disproportionate refactoring, preserve the working behavior and suppress the diagnostic as narrowly as possible instead of forcing the suggested fix.
+## Resolution order
 
 Prefer, in order:
 
-1. fix the warning safely
+1. fix the diagnostic safely
 2. use the tool or library's canonical supported alternative
-3. suppress only the specific line, expression, or rule that cannot be fixed safely
-4. disable a rule more broadly only when explicitly requested or when the repository already documents that policy
+3. narrowly suppress the specific diagnostic when fixing it would change intended behavior, create meaningful regression risk, or require disproportionate refactoring
+4. broaden suppression only when explicitly requested or already established by repository policy
 
-When suppressing a diagnostic:
+Suppression is an intentional exception, not cleanup.
 
-- use the smallest supported scope, preferably the next line or exact expression
-- name the exact rule or diagnostic identifier when the tool supports it
-- add a short reason when the intent is not obvious
-- preserve behavior intentionally; do not use suppression to avoid a safe straightforward fix
-- never disable an entire linter, checker, plugin, or ruleset just to silence one local warning
+When suppressing:
 
-For example, when a React hook dependency warning is intentionally not fixable without changing the effect's required lifecycle, prefer a targeted suppression such as:
-
-```ts
-// eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: effect must only run on mount
-```
+- use the smallest supported scope
+- name the exact rule or diagnostic when supported
+- state the reason when intent is not obvious
+- preserve the intended behavior
+- never disable an entire checker, linter, plugin, or ruleset merely to silence one local warning
 
 Do not convert a local exception into project-wide configuration churn.
 
-## Validation
+## Verification
 
-After fixing or suppressing a warning:
+After resolving or suppressing an in-scope diagnostic:
 
 - re-run or re-check the narrowest relevant diagnostic source when practical
-- ensure the warning is gone or intentionally suppressed at the narrowest scope
-- ensure no new warning was introduced nearby
+- confirm the original diagnostic is gone or intentionally suppressed
+- check that the correction did not introduce nearby diagnostics
 - preserve the requested behavior
+- keep unrelated repository diagnostics outside the patch
 
-## Interaction with other skills
-
-- `scope-discipline` limits cleanup to the requested and touched surface.
-- `minimalist` favors the smallest safe warning fix or suppression.
-- framework-specific skills decide the idiomatic replacement when tooling feedback is framework-specific.
-
-Tooling feedback should improve touched code without silently expanding the task.
+Tooling feedback improves the touched surface; it does not expand the task.

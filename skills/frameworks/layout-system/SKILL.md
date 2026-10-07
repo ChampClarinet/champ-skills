@@ -55,9 +55,23 @@ Unless the product explicitly defines another minimum:
 
 Do not set a global `min-width: 320px` merely to hide overflow.
 
-Graceful degradation means content remains reachable, controls usable, and text free from destructive overlap or clipping. Exact composition and spacing parity are not required below the full-quality minimum.
+Recommended verification widths:
 
-Check intermediate widths, not only named framework breakpoints.
+```text
+280px   graceful-degradation smoke check
+320px   minimum fully supported phone width
+360px   common narrow Android width
+375px   common phone width
+390px   common modern phone width
+768px   tablet / compact layout transition
+1024px  compact desktop / tablet landscape
+1280px  standard desktop
+1440px  wide desktop
+```
+
+Also inspect intermediate widths between these checkpoints. Passing only the listed snapshots is not sufficient.
+
+Graceful degradation means content remains reachable, controls usable, and text free from destructive overlap or clipping. Exact composition and spacing parity are not required below the full-quality minimum.
 
 When space becomes constrained, reduce outer and high-level spacing before compressing tightly related controls or text. Preserve the spacing hierarchy while compressing.
 

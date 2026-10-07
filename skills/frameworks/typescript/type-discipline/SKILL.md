@@ -1,316 +1,99 @@
 ---
 name: typescript-type-discipline
-description: TypeScript guidance focused on maintainable typing, explicit contracts, safe inference, modular type organization, and long-term readability.
+description: Champ's TypeScript defaults for readable contracts, any/unknown, assertions, runtime validation, inference, enums, and type ownership. Use when type design or TypeScript boundaries require a policy decision.
 ---
 
 # TypeScript Type Discipline
 
-Use TypeScript to improve maintainability, correctness, tooling, and readability.
+Use types to make contracts and ownership clearer, not to demonstrate type-system cleverness.
 
-Do not use TypeScript to create clever unreadable type systems.
+Repository-local explicit conventions override these defaults.
 
-## Core Principles
+## Readability first
 
-- Prefer readability over type wizardry.
-- Prefer explicit contracts.
-- Prefer maintainable inference.
-- Prefer predictable type ownership.
-- Keep types close to their domain.
-- Avoid unnecessary generic complexity.
-- Optimize for future maintainers, not type gymnastics.
+Prefer the simplest type that accurately communicates the contract.
 
-## TypeScript-First
+Avoid type puzzles, deeply recursive machinery, and generic abstraction whose maintenance cost exceeds the correctness or reuse it provides.
 
-Use TypeScript for project code.
+Do not add generics merely because code can be generalized. Generalize when callers share the same concept and the abstraction remains readable.
 
-Prefer typed APIs, typed component props, typed service boundaries, and typed domain models.
+## Interface and type defaults
 
-Avoid gradually falling back to untyped JavaScript patterns.
+Under Champ defaults, prefer interfaces for ordinary object contracts, component props, domain models, and service/repository contracts.
 
-## Interfaces vs Types
+Prefer type aliases when unions, mapped/conditional types, utility composition, intersections, or function signatures make them clearer.
 
-Prefer interfaces for:
+This is a readability default, not a reason to churn an established repository convention.
 
-- component props
-- object contracts
-- domain models
-- service/repository contracts
-- extendable object shapes
-
-Example:
-
-```ts
-export interface User {
-  id: string;
-  name: string;
-}
-```
-
-Prefer type aliases for:
-
-- unions
-- mapped types
-- utility compositions
-- function signatures
-- conditional types
-
-Example:
-
-```ts
-export type Status = "idle" | "loading" | "success" | "error";
-```
-
-Do not argue dogmatically about `interface` vs `type`.
-
-Choose the clearer representation.
-
-## Avoid `any`
+## `any`, `unknown`, and assertions
 
 Avoid `any` whenever reasonably possible.
 
-Prefer:
+At uncertain boundaries, prefer `unknown` plus narrowing or validation.
 
-- `unknown`
-- proper generic constraints
-- explicit interfaces
-- narrowing
-- validation/parsing boundaries
+Use assertions only when the value is already justified by a trusted/validated boundary or a framework limitation. Do not cast merely to silence a type error.
 
-If `any` is intentionally required, document why.
+If `any` is genuinely required at a boundary, keep it narrow and make the reason evident from nearby code or repository convention.
 
-Bad:
-
-```ts
-const data: any = response.data;
-```
-
-Better:
-
-```ts
-const data: unknown = response.data;
-```
-
-## Type Narrowing
-
-Prefer explicit narrowing before usage.
-
-Example:
-
-```ts
-if (typeof value === "string") {
-  return value.toUpperCase();
-}
-```
-
-Do not blindly cast values just to silence TypeScript.
-
-Avoid:
-
-```ts
-(value as User).name;
-```
-
-unless the boundary is trusted and intentional.
-
-## Type Assertions
-
-Use assertions sparingly.
-
-Assertions should represent:
-
-- trusted boundaries
-- framework limitations
-- validated external data
-
-Do not use assertions to bypass real type problems.
-
-## Utility Types
-
-Use utility types when they improve clarity.
-
-Good:
-
-```ts
-Partial<User>;
-Pick<User, "id" | "name">;
-Record<string, string>;
-```
-
-Avoid deeply nested unreadable utility compositions.
-
-If a type becomes difficult to understand quickly, simplify it.
-
-## Generics
-
-Use generics intentionally.
-
-Prefer simple readable generics.
-
-Good:
-
-```ts
-function identity<T>(value: T): T {
-  return value;
-}
-```
-
-Avoid excessive generic abstraction layers that reduce readability.
-
-Do not introduce generics unless they solve a repeated or reusable problem.
-
-## Enums
-
-Avoid enums for simple application states.
-
-Prefer literal unions:
-
-```ts
-type Status = "idle" | "loading" | "success" | "error";
-```
-
-Use enums only when there is a clear interoperability or domain reason.
-
-## File Organization
-
-Keep small local types close to the implementation when tightly coupled.
-
-Extract types when they are:
-
-- shared across files
-- domain-level concepts
-- API contracts
-- reused heavily
-- large enough to distract from implementation logic
-
-Examples:
-
-```txt
-user.types.ts
-auth.types.ts
-api.types.ts
-```
-
-Avoid giant global dumping-ground files like:
-
-```txt
-types.ts
-global-types.ts
-misc-types.ts
-```
-
-unless the scope is intentionally small and cohesive.
-
-## Naming
-
-Use descriptive type names.
-
-Prefer:
-
-```ts
-UserProfile;
-ApiError;
-CreateUserPayload;
-```
-
-Avoid:
-
-```ts
-Data;
-Item;
-ResponseData;
-Obj;
-```
-
-Boolean variables should use auxiliary verbs:
-
-```ts
-isLoading;
-hasError;
-canSubmit;
-```
-
-## Nullability
-
-Handle `null` and `undefined` intentionally.
-
-Prefer explicit optionality:
-
-```ts
-name?: string
-```
-
-Prefer narrowing before usage.
-
-Avoid unsafe assumptions about existence.
-
-## Async Typing
-
-Prefer explicit async return types when clarity helps.
-
-Example:
-
-```ts
-async function fetchUser(): Promise<User> {
-  ...
-}
-```
-
-Keep async data contracts typed across boundaries.
-
-## Runtime Validation
+## Runtime boundaries
 
 TypeScript types do not validate runtime data.
 
-For external data:
+Validate or parse untrusted/external data when correctness depends on its shape, including API responses, storage, query parameters, user-controlled input, and other runtime boundaries.
 
-- APIs
-- local storage
-- query params
-- user input
+Do not add runtime schemas to internal values whose shape is already guaranteed merely for ceremony.
 
-prefer validation/parsing when correctness matters.
+## Inference and explicit contracts
 
-Do not assume external data matches TypeScript types automatically.
+Use inference for obvious local implementation details.
 
-## Inference Discipline
+Prefer explicit types where a public/exported boundary, service contract, domain boundary, async result, or otherwise non-obvious shape benefits from clarity.
 
-Allow TypeScript to infer obvious local values.
+Do not annotate trivial locals simply to make them look typed.
 
-Good:
+## Type ownership
 
-```ts
-const count = 5;
-```
+Keep small types close to the code that owns them.
 
-Do not over-annotate trivial local variables.
+Extract a type when it is an independently meaningful domain/API contract, shared by multiple owners, or large enough that colocation obscures the implementation.
 
-Add explicit types when:
+Do not create broad `types.ts`, `common.ts`, or similar dumping grounds for unrelated contracts.
 
-- the boundary matters
-- readability improves
-- inference becomes unclear
-- exported APIs are involved
+`file-structure` remains the canonical owner of file organization and naming.
 
-## Readability over Cleverness
+## Enums
 
-Avoid:
+Prefer literal unions for simple application states.
 
-- type puzzles
-- unreadable conditional types
-- deeply recursive types
-- abstractions that only type experts understand
+Use enums when interoperability, generated/external contracts, or a domain requirement gives the enum itself concrete value.
 
-A simpler explicit type is usually better than a clever magical one.
+Do not migrate existing enums solely to satisfy this preference.
 
-## Review Checklist
+## Nullability
 
-When reviewing TypeScript code, ask:
+Model optional or nullable values intentionally.
 
-- Is the type readable?
-- Is this abstraction necessary?
-- Would another developer understand this quickly?
-- Is `any` avoidable here?
-- Is inference helping or hiding intent?
-- Is the type ownership clear?
-- Is runtime validation needed?
-- Is this type solving a real problem or creating one?
+Narrow before use rather than hiding uncertainty behind non-null assertions.
+
+Use a non-null assertion only when an invariant genuinely guarantees the value and that invariant is clear at the usage boundary.
+
+## Composition
+
+- `ownership-boundaries` owns who owns a contract.
+- `file-structure` owns where independently owned types live.
+- framework skills own framework-specific typing constraints.
+- `tooling-feedback` owns TypeScript/compiler diagnostics on touched code.
+
+This skill should not repeat basic TypeScript syntax or utility-type documentation.
+
+## Verification
+
+For touched type design, verify:
+
+- the contract is readable without type gymnastics
+- `any` and assertions are narrow and justified
+- runtime data is validated where static typing cannot guarantee it
+- inference is used for implementation detail, explicit types for meaningful boundaries
+- extracted types have independent/shared ownership
+- nullability is handled explicitly
+- repository convention was not churned for a personal syntax preference

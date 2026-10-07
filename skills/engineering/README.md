@@ -1,6 +1,8 @@
 # Engineering skills
 
-- **[debug-mantra](./debug-mantra/SKILL.md)** — Four-mantra debugging discipline: reproduce → trace the fail path → falsify the hypothesis → cross-reference every breadcrumb.
+- **[skill-router](./skill-router/SKILL.md)** — Compose relevant skills, resolve authority, and avoid redundant or conflicting instruction loads.
+- **[agent-orchestration](./agent-orchestration/SKILL.md)** — Choose economically useful single- or multi-agent execution with durable state when continuation needs it.
+- **[debug-mantra](./debug-mantra/SKILL.md)** — Evidence-driven debugging: establish a failure signal, trace the path, falsify hypotheses, and verify the original signal after fixing.
 - **[post-mortem](./post-mortem/SKILL.md)** — Write the canonical engineering record of a fixed bug — root cause, mechanism, fix, validation, how it slipped through.
 - **[scope-discipline](./scope-discipline/SKILL.md)** — Keep implementation bounded to the requested outcome and avoid unrelated changes.
 - **[ownership-boundaries](./ownership-boundaries/SKILL.md)** — Keep state, side effects, data access, dependencies, and behavior at the narrowest meaningful owner.
@@ -12,4 +14,3 @@
 - **[skeptic](./skeptic/SKILL.md)** — Challenge implementation assumptions with evidence instead of agreeing by default.
 - **[archaeologist](./archaeologist/SKILL.md)** — Recover the reason legacy code exists before modernizing or deleting it.
 - **[paranoid](./paranoid/SKILL.md)** — Adversarial pre-ship pass for hidden failure paths and false confidence.
-- **[agent-orchestration](./agent-orchestration/SKILL.md)** — Coordinate coding subagents through durable repository checkpoints so runs can resume without conversation history or mandatory role ceremony.

@@ -1,225 +1,143 @@
 ---
 name: layout-system
-description: Mandatory layout rules that prioritize Grid, Flexbox, hierarchical gaps, responsive spacing, container-aware responsiveness, and gap-based structure over spacing hacks and arbitrary offsets.
+description: Champ's Grid/Flex-first web layout, spacing hierarchy, responsive-width, container-aware, and intentional positioning policy. Use when creating or modifying page/component layout, responsive behavior, or reference-UI spacing.
 ---
 
 # Layout System
 
-Build layout with layout systems, not with accumulated spacing utilities.
+Build layout from explicit structural relationships, not accumulated spacing corrections.
 
-## Non-Negotiable Rules
+Repository-local explicit layout conventions override these personal defaults.
+
+## Hard invariants
 
 - Use CSS Grid or Flexbox as the primary mechanism for page, section, and component layout.
-- Use `gap-*` for spacing between children inside Grid or Flex containers.
-- Gap size must respect visual and structural hierarchy. Higher-level containers use larger gaps; lower-level groups use smaller gaps.
-- Do not use the same gap value indiscriminately at every nesting level.
-- Spacing must remain intentional at every supported viewport width. It must not become cramped, excessively loose, or visually disconnected as the viewport changes.
-- Do not use `space-x-*` or `space-y-*` as the primary structural layout mechanism.
-- Do not build vertical or horizontal page structure by stacking `mt-*`, `mb-*`, `ml-*`, `mr-*`, `pt-*`, `pb-*`, `pl-*`, or `pr-*` across siblings.
-- Arbitrary spacing utilities such as `space-y-[...]`, `mt-[...]`, `mb-[...]`, `top-[...]`, `left-[...]`, `translate-x-[...]`, and `translate-y-[...]` must not be used to compensate for an incorrect layout model.
-- Prefer alignment primitives such as `items-*`, `justify-*`, `content-*`, `place-*`, `self-*`, and auto-sized Grid tracks over manual offsets.
-- Prefer parent-owned layout over child-owned positioning. The parent container should define flow, alignment, and spacing for its children.
-- Use margins only for genuine local separation or external spacing where a Grid/Flex `gap` cannot express the intent cleanly.
-- Use padding only for a component's internal inset, not to force neighboring components into position.
-- Do not use relative positioning, transforms, or negative margins for ordinary document layout.
-- If many one-off spacing values are required, assume the layout model is wrong and redesign it with Grid or Flexbox before continuing.
+- Use `gap` for repeated spacing between children inside Grid or Flex containers.
+- Parent containers should own the flow, alignment, distribution, and repeated spacing of their children.
+- Do not simulate ordinary structural layout with accumulated margins, positional offsets, transforms, or arbitrary spacing when Grid or Flexbox can express the relationship directly.
+- Use padding for internal inset. Use margin for genuine local or external separation, not to compensate for an incorrect parent layout.
+- Intentional overlapping or anchored elements may use positioned layout. Absolute positioning is not a substitute for ordinary sibling flow.
+- Horizontal scrolling is acceptable only for intentionally scrollable regions such as tables, code, timelines, or carousels. It is not a fallback for broken ordinary page layout.
 
-## Gap Hierarchy
+## Spacing hierarchy
 
-Spacing must communicate containment and grouping.
+Spacing communicates containment and grouping.
 
-Use larger gaps between major regions and progressively smaller gaps inside nested groups. A child container's internal gap should normally be smaller than the gap that separates that child from its sibling containers.
+For nested structures, normally preserve:
 
-Typical hierarchy:
+`page > section > group/card > inline`
 
-- page sections: largest gap
-- section groups or major panels: large gap
-- cards, form groups, or content blocks: medium gap
-- labels, controls, icons, and tightly related elements: small gap
+Higher-level separation should normally be larger than spacing among tightly related descendants.
 
-Example:
+Do not copy one gap token indiscriminately across every nesting level. A nested gap larger than its surrounding structural separation requires an explicit design reason.
 
-```tsx
-<main className="flex flex-col gap-10">
-  <section className="flex flex-col gap-6">
-    <SectionHeader />
+Responsive compression should preserve this hierarchy rather than flatten every level to the same spacing.
 
-    <div className="grid gap-4 lg:grid-cols-3">
-      <Card className="flex flex-col gap-3">
-        <CardHeader className="flex items-center gap-2" />
-        <CardContent />
-      </Card>
-    </div>
-  </section>
-</main>
+If a layout accumulates many one-off spacing corrections, re-evaluate the layout model before adding another correction.
+
+## Positioning
+
+Do not use relative/absolute positioning, transforms, negative margins, or positional offsets to compensate for ordinary document-flow layout that should be expressed with Grid or Flexbox.
+
+Absolute positioning is appropriate when elements intentionally overlap or are anchored within a positioned container.
+
+Typical valid uses include overlays, badges, floating controls, decorative layers, and controls intentionally placed over another element.
+
+The positioned parent owns the coordinate system. Do not use absolute positioning to reconstruct ordinary sibling flow or compensate for incorrect spacing or alignment.
+
+## Responsive width policy
+
+Unless the product explicitly defines another minimum:
+
+- `320px` is the minimum width for full layout quality.
+- `280px–319px` requires graceful degradation.
+- below `280px`, preserve access where practical without a default full-quality guarantee.
+
+Do not set a global `min-width: 320px` merely to hide overflow.
+
+Recommended verification widths:
+
+```text
+280px   graceful-degradation smoke check
+320px   minimum fully supported phone width
+360px   common narrow Android width
+375px   common phone width
+390px   common modern phone width
+768px   tablet / compact layout transition
+1024px  compact desktop / tablet landscape
+1280px  standard desktop
+1440px  wide desktop
 ```
 
-The exact tokens may vary by project, but the relative hierarchy must remain clear:
+Also inspect intermediate widths between these checkpoints. Passing only the listed snapshots is not sufficient.
 
-```txt
-page gap > section gap > group/card gap > inline gap
-```
+Graceful degradation means content remains reachable, controls usable, and text free from destructive overlap or clipping. Exact composition and spacing parity are not required below the full-quality minimum.
 
-Avoid flat spacing such as applying `gap-4` to the page, every section, every card, and every inline group. Equal gaps at all nesting levels erase visual hierarchy and make unrelated regions appear equally connected.
+When space becomes constrained, reduce outer and high-level spacing before compressing tightly related controls or text. Preserve the spacing hierarchy while compressing.
 
-Do not increase a deeply nested container's gap beyond its parent separation without an explicit design reason. When a nested gap feels larger than the boundary around its container, re-check the grouping model.
+Allow Grid and Flex items to wrap, stack, shrink, or change column count according to available space.
 
-## Responsive Spacing
+Long text, localization, browser text zoom, increased system text size, and dynamic content must not create destructive overlap or inaccessible content.
 
-Spacing is responsive behavior, not a fixed screenshot value.
-
-- Support viewport widths down to `320px` by default unless the product explicitly defines a different minimum.
-- Treat `320px` as the minimum width for full layout quality and intentional visual fidelity.
-- Do not set a global `min-width: 320px` merely to hide overflow. The layout itself must reflow cleanly at `320px`.
-- At widths from `280px` to `319px`, require graceful degradation rather than full layout parity.
-- Graceful degradation below `320px` means content remains reachable, controls remain usable, text does not overlap, and nothing is destructively clipped. Pixel-perfect spacing and identical composition are not required.
-- Do not distort the primary design or add large amounts of complexity solely to optimize for widths below `320px` unless the product explicitly targets them.
-- Below `280px`, preserve access where practical, but no default layout-quality guarantee is required unless the product defines a narrower minimum.
-- Check intermediate widths, not only named framework breakpoints. Layout bugs often appear between presets.
-- Reduce outer page padding and high-level gaps before compressing tightly related controls or text.
-- Preserve gap hierarchy as spacing changes. Responsive compression should scale the hierarchy, not flatten every level to one identical gap.
-- Avoid abrupt jumps where a section feels too loose immediately above a breakpoint or too cramped immediately below it.
-- Allow Grid and Flex items to wrap, stack, shrink, or change column count according to available space.
-- Verify long labels, localization, dynamic content, browser text zoom, and increased system text size do not collapse spacing or cause overlap.
-- Horizontal scrolling is acceptable only for intentionally scrollable regions such as data tables, code, timelines, or carousels. It is not an acceptable fallback for ordinary page layout.
-
-Recommended viewport checks:
-
-```txt
-280px  graceful-degradation smoke check
-320px  minimum fully supported phone width
-360px  common narrow Android width
-375px  common phone width
-390px  common modern phone width
-768px  tablet / compact layout transition
-1024px compact desktop / tablet landscape
-1280px standard desktop
-1440px wide desktop
-```
-
-Also drag or step through the full range between these widths. Passing only the listed snapshots is not sufficient.
-
-## Container-Aware Components
+## Container-aware components
 
 Viewport width and component width are not interchangeable.
 
-When a reusable module or component can be rendered inside layouts whose available width changes independently of the viewport—for example inside sidebars, dashboard columns, split panes, dialogs, drawers, nested cards, or embeddable feature shells—make its responsive behavior container-aware.
+When a reusable component can become narrow independently of the viewport—such as inside a sidebar, dashboard column, dialog, drawer, split pane, or nested card—base component-level responsive decisions on its available container width when appropriate.
 
-- Prefer CSS container queries for component- or module-level layout decisions that depend on the width of the component's parent region rather than the browser viewport.
-- Establish an intentional container boundary at the feature/module owner instead of scattering unrelated container declarations through descendants.
-- In Tailwind projects with container-query support, prefer the repository's standard container-query variants and conventions over arbitrary CSS when they express the requirement cleanly.
-- Do not rely only on viewport breakpoints such as `sm:`, `md:`, `lg:`, or `xl:` when a component may become narrow because of a sidebar, dashboard grid, dialog, drawer, or other parent layout while the viewport remains wide.
-- Viewport breakpoints remain appropriate for true page-level behavior. Use container queries for reusable child composition whose available width is controlled by its containing layout.
-- Avoid fixed widths that merely happen to fit the component's current page placement. Components should tolerate being embedded in narrower or wider valid containers.
-- Verify container-aware components at multiple parent widths without changing the viewport, including narrow states that can occur on desktop.
-- Do not add container-query complexity to components whose layout genuinely depends only on viewport-level page composition.
+Prefer container queries when the layout decision belongs to the component's containing region rather than the page viewport.
 
-A component that works at a mobile viewport but breaks when placed in a narrow desktop column is not responsive.
+Establish the container boundary at the meaningful feature or module owner instead of scattering container declarations through descendants.
 
-## Tailwind CSS Guidance
+Do not rely only on viewport breakpoints when a component can become narrow while the viewport remains wide.
 
-Preferred:
+Do not add container-query complexity when the layout genuinely depends only on page-level viewport composition.
 
-```tsx
-<div className="grid gap-6 lg:grid-cols-3">
-  <SummaryCard />
-  <SummaryCard />
-  <SummaryCard />
-</div>
-```
+Verify reusable components at relevant parent widths independently of viewport width.
 
-```tsx
-<section className="flex flex-col gap-4">
-  <SectionHeader />
-  <SectionContent />
-</section>
-```
+## Arbitrary spacing and offsets
 
-Avoid:
+Prefer the project's standard spacing tokens.
 
-```tsx
-<div className="space-y-[37px]">
-  <SectionHeader />
-  <SectionContent />
-</div>
-```
+An arbitrary value is acceptable when it represents a concrete design requirement that the project's spacing or layout system cannot express cleanly.
 
-```tsx
-<div>
-  <SectionHeader />
-  <SectionContent className="mt-[43px]" />
-</div>
-```
+It is not acceptable when it compensates for a broken layout model.
 
-```tsx
-<div className="relative">
-  <Toolbar className="relative top-[8px]" />
-</div>
-```
+When arbitrary spacing values begin accumulating, trace the underlying structural relationship before adding more.
 
-Standard Tailwind spacing tokens are still allowed when they represent deliberate local spacing. Arbitrary values require a concrete design requirement that cannot be represented by the project's spacing scale or layout system.
+## Reference UI work
 
-## Reference UI Work
+When reproducing a reference UI, treat visible spacing as evidence of an underlying layout model.
 
-When reproducing a reference image:
+Infer rows, columns, alignment groups, container boundaries, repeated gaps, and spacing hierarchy before tuning individual values.
 
-- Treat spacing as evidence of the underlying layout, not as isolated pixel offsets.
-- Infer rows, columns, alignment groups, container boundaries, repeated gaps, and spacing hierarchy before writing utilities.
-- Identify which gaps separate major regions and which gaps group tightly related elements.
-- Match the reference with Grid/Flex structure and hierarchical gaps first, then tune a small number of local spacing values only when necessary.
-- Infer how spacing and grouping should adapt outside the captured reference width.
-- Do not chase screenshot fidelity by accumulating arbitrary margins, `space-y-[...]`, transforms, or positioned offsets.
-- Responsive behavior must come from layout rules and breakpoints or container queries appropriate to the ownership boundary, not from compensating offsets.
+Establish Grid/Flex structure first, then tune the smallest necessary local values.
 
-## Cross-Browser Safety
+Do not chase screenshot fidelity by accumulating margins, transforms, positional offsets, or arbitrary spacing corrections.
 
-Layout must remain stable in:
+Infer responsive behavior beyond the captured reference width instead of treating the screenshot as a fixed canvas.
 
-- Chromium-based browsers
-- Firefox
-- desktop Safari
-- iOS Safari
+## Cross-browser safety
 
-Do not depend on spacing hacks whose result changes with font metrics, intrinsic content height, viewport units, browser rounding, or Safari's layout behavior.
+For affected layout behavior, verify compatibility with Chromium, Firefox, desktop Safari, and iOS Safari when practical.
 
-## Required Final Verification
+Avoid layout assumptions that depend unnecessarily on unstable font metrics, intrinsic-content quirks, viewport-unit behavior, browser rounding, or browser-specific layout behavior.
 
-Before completing any task that creates or modifies web UI layout:
+## Verification
 
-- [ ] Inspect every modified container and identify whether Grid or Flexbox owns its layout.
-- [ ] Confirm repeated sibling spacing uses `gap-*` where appropriate.
-- [ ] Confirm gap sizes communicate hierarchy across page, section, group/card, and inline levels.
-- [ ] Confirm nested containers normally use smaller gaps than their parent-level separation.
-- [ ] Confirm responsive spacing preserves hierarchy instead of flattening every level to one gap.
-- [ ] Confirm the same gap token has not been copied indiscriminately across unrelated nesting levels.
-- [ ] Search the final diff for `space-x-[`, `space-y-[`, arbitrary margin/padding values, positional offsets, transforms, and negative margins.
-- [ ] For every remaining arbitrary spacing value, confirm it is a documented design requirement rather than compensation for broken structure.
-- [ ] Confirm parent containers own child alignment and spacing wherever practical.
-- [ ] Verify content growth does not break the layout.
-- [ ] Verify full layout quality at `320px` and every product-relevant viewport size.
-- [ ] Perform a graceful-degradation smoke check at `280px`.
-- [ ] Confirm widths from `280px` to `319px` keep content accessible, controls usable, and text free from destructive overlap or clipping.
-- [ ] Inspect intermediate widths between breakpoints for cramped, excessive, or abrupt spacing changes.
-- [ ] For reusable components/modules whose width can differ from viewport width, verify whether container queries are required and test multiple parent-container widths independently of the viewport.
-- [ ] Verify narrow desktop containers caused by sidebars, dashboard columns, dialogs, drawers, or split panes do not preserve an invalid wide-layout composition merely because the viewport breakpoint is large.
-- [ ] Verify long text, wrapping, localization, and browser text zoom do not create overlap or broken spacing.
-- [ ] Confirm ordinary page content has no unintended horizontal overflow.
-- [ ] Verify Safari and iOS Safari compatibility for the affected layout.
-- [ ] Refactor every spacing hack, broken spacing hierarchy, or responsive spacing defect discovered during verification before reporting the task complete.
+For touched in-scope layout, verify:
 
-Do not report the task as complete while any checklist item fails. A layout that only works because of accumulated spacing offsets, flat hierarchy-less gaps, viewport-only breakpoint assumptions, or inaccessible narrow-width degradation is not complete.
+- Grid or Flex owns structural layout where applicable
+- the parent owns repeated child spacing and alignment
+- spacing preserves meaningful hierarchy
+- arbitrary spacing and offsets are requirements rather than structural compensation
+- positioned layout is used for intentional overlap or anchoring rather than ordinary sibling flow
+- full layout quality holds at `320px` unless the product defines another minimum
+- `280px–319px` remains usable without destructive clipping or overlap
+- intermediate widths do not reveal broken transitions
+- reusable components account for container width when it can differ materially from viewport width
+- long or dynamic text and text zoom do not break accessibility or layout
+- ordinary page content has no unintended horizontal overflow
+- affected browser-specific layout behavior is checked where relevant
 
-## Intent
-
-Optimize for:
-
-- predictable layout behavior
-- responsive stability
-- container-aware reusable components
-- cross-browser consistency
-- maintainable spacing systems
-- clear visual and structural hierarchy
-- clear parent-child layout ownership
-- stable spacing across the full supported viewport range
-- graceful degradation below the full-support minimum
-- fidelity without pixel-hack accumulation
+A discovered in-scope structural layout defect is required correction before completion. Do not expand scope into unrelated untouched layout solely to enforce this policy.

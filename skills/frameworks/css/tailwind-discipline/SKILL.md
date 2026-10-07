@@ -1,246 +1,90 @@
 ---
 name: css-tailwind-discipline
-description: Tailwind and CSS guidance focused on readable utility composition, responsive layouts, maintainable styling patterns, and avoiding CSS chaos.
+description: Champ's Tailwind/CSS defaults for readable utility composition, reusable variants, theme/layer discipline, motion, and styling-specific traps. Use when implementing or reviewing Tailwind/CSS styling.
 ---
 
 # Tailwind / CSS Discipline
 
-Use CSS and Tailwind to create maintainable, readable, and predictable UI styling.
+Use Tailwind as readable project styling, not as a second abstraction language.
 
-Styling should support maintainability and product consistency, not become a second programming language.
+Repository-local explicit conventions override these defaults.
 
-## Core Principles
+## Canonical layout owner
 
-- Prefer readability over clever styling tricks.
-- Prefer consistency over one-off visual hacks.
-- Prefer composition over giant styling abstractions.
-- Prefer predictable spacing and layout systems.
-- Prefer maintainable responsive design.
-- Keep styling understandable during code review.
+`layout-system` owns structural layout: Grid/Flex preference, spacing hierarchy, responsive width verification, positioning, overflow, container behavior, and arbitrary layout values.
 
-## Tailwind Philosophy
+Do not duplicate or weaken those rules here.
 
-Use Tailwind as a utility-first styling system.
+This skill owns styling-specific composition around that layout.
 
-Prefer:
+## Utility composition
 
-- composable utilities
-- predictable spacing
-- consistent layout patterns
-- local readability
-- shared reusable variants when patterns repeat
+Prefer utilities that keep the rendered structure understandable during review.
 
-Avoid:
+Avoid giant unreadable class expressions, duplicated conditional class logic, and helper systems that hide straightforward styling.
 
-- giant unreadable class strings
-- random arbitrary values everywhere
-- duplicated styling logic
-- utility soup
-- overengineering design abstractions too early
+Reformat or compose class lists when it improves readability; do not extract styling solely to reduce line length.
 
-## Responsive Design
+## Reuse
 
-Prefer mobile-first responsive design.
+Extract reusable styling when repeated appearance represents the same concept and is expected to evolve together.
 
-Example:
+Prefer established variants, tokens, or shared primitives for repeated component states.
 
-```tsx
-className="
-  flex
-  flex-col
-  gap-4
-  md:flex-row
-  lg:gap-6
-"
-```
+Do not abstract two class lists merely because they currently look similar.
 
-Prefer responsive behavior that is easy to reason about.
+Keep the abstraction at the narrowest shared ownership boundary.
 
-Avoid breakpoint chaos where every screen size behaves differently without a clear pattern.
+## Arbitrary values
 
-## Layout Discipline
+Use arbitrary values for concrete product/design constraints that the normal scale cannot express cleanly.
 
-Prefer modern layout systems:
+Do not use them as compensation for a broken layout model or as a substitute for an intentional spacing/token system.
 
-- flex
-- grid
+## shadcn/ui
 
-Avoid relying heavily on:
+Treat shadcn components as project-owned source code, while preserving upstream structure when compatibility, comparison, or future updates benefit.
 
-- absolute positioning
-- magic margins
-- layout hacks
+Customize when product, accessibility, or maintainability requirements justify it.
 
-Use spacing systems intentionally.
+Do not mechanically rewrite internals merely to match personal formatting preferences.
 
-Prefer:
+## Theme and color
 
-```txt
-gap-4
-px-6
-py-4
-```
+Prefer semantic project tokens/variables when the project has them.
 
-over random spacing combinations everywhere.
+Avoid scattering hardcoded theme overrides when the same semantic role already exists.
 
-## Class Readability
+Preserve repository dark-mode strategy rather than introducing a second theme mechanism.
 
-Keep class composition readable.
+## Motion
 
-Prefer grouping related concerns:
+Use motion for feedback, hierarchy, transitions, or meaningful continuity.
 
-```tsx
-className="
-  flex items-center gap-2
-  rounded-md border
-  px-4 py-2
-  text-sm font-medium
-"
-```
+Avoid decorative animation that distracts from interaction.
 
-Avoid giant single-line unreadable class chains.
+Prefer transform/opacity for ordinary visual motion when they express the effect; use layout-affecting animation only when the behavior requires it.
 
-Break long class lists into multiple lines when readability improves or using clsx.
+## Layering
 
-## Reusable Styling
+Avoid ad-hoc z-index escalation.
 
-Extract reusable styling patterns when repetition becomes meaningful.
-
-Good candidates:
-
-- button variants
-- card layouts
-- repeated form layouts
-- reusable typography patterns
-
-Do not extract abstractions too early.
-
-Avoid creating giant styling helper systems for small projects.
-
-## Arbitrary Values
-
-Use arbitrary values intentionally.
-
-Acceptable:
-
-```tsx
-top-[42px]
-```
-
-when:
-
-- integrating with external constraints
-- matching precise product requirements
-- bridging temporary layout gaps
-
-Avoid arbitrary-value spam that destroys consistency.
-
-Prefer design-system spacing/scales when possible.
-
-## shadcn/ui Discipline
-
-Treat shadcn/ui as owned source code.
-
-You may customize components when:
-
-- product requirements differ
-- accessibility needs change
-- maintainability improves
-- repeated patterns emerge
-
-Do not mechanically rewrite shadcn/ui internals without a clear reason.
-
-Preserve upstream compatibility when practical.
-
-## Dark Mode
-
-Prefer predictable theme handling.
-
-Avoid scattering hardcoded color overrides everywhere.
-
-Prefer shared semantic color usage when the project has design tokens or theme variables.
-
-## Animation
-
-Prefer subtle meaningful motion.
-
-Animation should support:
-
-- feedback
-- hierarchy
-- transitions
-- perceived smoothness
-
-Avoid distracting animation spam.
-
-Prefer performant animation properties such as:
-
-- transform
-- opacity
-
-Avoid layout-thrashing animation when possible.
-
-## Z-Index Discipline
-
-Avoid random z-index escalation wars.
-
-Prefer documented layering conventions.
-
-Bad:
-
-```css
-z-[999999]
-```
-
-Prefer intentional layer scales.
-
-## Overflow / Sizing
-
-Handle overflow intentionally.
-
-Prefer predictable sizing constraints:
-
-```tsx
-max - w - screen - lg;
-overflow - hidden;
-truncate;
-```
-
-Avoid layout breakage caused by uncontrolled content growth.
+Use the repository's layer scale when one exists. Otherwise establish the smallest understandable local stacking model rather than competing arbitrary values.
 
 ## Accessibility
 
-Styling should not reduce usability.
+Styling must preserve usable contrast, visible focus, readable content, touch targets, and native interaction affordances.
 
-Prefer:
+Do not remove accessibility cues solely for aesthetics.
 
-- sufficient contrast
-- visible focus states
-- readable font sizes
-- accessible spacing/touch targets
+## Verification
 
-Do not remove accessibility affordances purely for aesthetics.
+For touched styling, verify:
 
-## Performance
-
-Prefer efficient styling approaches.
-
-Avoid:
-
-- excessive DOM nesting for styling only
-- unnecessary runtime style generation
-- giant unused styling systems
-- excessive animation repaint cost
-
-## Review Checklist
-
-When reviewing styling code, ask:
-
-- Is this readable?
-- Is spacing/layout consistent?
-- Is this responsive behavior predictable?
-- Is this abstraction actually reusable?
-- Are arbitrary values justified?
-- Would another developer understand this quickly?
-- Is this maintainable long-term?
-- Is accessibility preserved?
+- structural decisions still satisfy `layout-system`
+- class composition remains readable
+- extracted variants represent genuinely shared concepts
+- arbitrary values encode real design constraints rather than compensation
+- theme and layer behavior use one understandable system
+- motion does not obscure interaction
+- accessibility affordances remain visible

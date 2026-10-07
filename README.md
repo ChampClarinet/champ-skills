@@ -89,7 +89,9 @@ Or through a global `AGENTS.md` setup.
 
 ### Engineering
 
-- **[debug-mantra](./skills/engineering/debug-mantra/SKILL.md)** — Structured debugging workflow: reproduce → trace the fail path → falsify hypotheses → track breadcrumbs.
+- **[skill-router](./skills/engineering/skill-router/SKILL.md)** — Compose relevant skills, resolve authority, and avoid redundant or conflicting instruction loads.
+- **[agent-orchestration](./skills/engineering/agent-orchestration/SKILL.md)** — Choose economically useful single- or multi-agent execution with durable state when continuation needs it.
+- **[debug-mantra](./skills/engineering/debug-mantra/SKILL.md)** — Evidence-driven debugging: establish a failure signal, trace the path, falsify hypotheses, and verify the original signal after fixing.
 - **[post-mortem](./skills/engineering/post-mortem/SKILL.md)** — Engineering-focused root cause writeup: mechanism, fix, validation, and why it slipped through.
 - **[scope-discipline](./skills/engineering/scope-discipline/SKILL.md)** — Keep implementation bounded to the requested outcome and avoid unrelated changes.
 - **[ownership-boundaries](./skills/engineering/ownership-boundaries/SKILL.md)** — Keep state, side effects, data access, dependencies, and behavior at the narrowest meaningful owner.

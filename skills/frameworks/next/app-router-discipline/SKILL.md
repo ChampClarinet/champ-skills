@@ -1,336 +1,92 @@
 ---
 name: next-app-router-discipline
-description: Next.js App Router guidance focused on server/client boundaries, rendering behavior, routing structure, data ownership, and maintainable React architecture.
+description: Champ's Next.js App Router defaults for server/client boundaries, route ownership, data flow, caching, and framework-native behavior. Use when implementing or reviewing Next.js App Router code.
 ---
 
 # Next.js App Router Discipline
 
-Use Next.js App Router to keep rendering, routing, and data flow predictable and maintainable.
+Prefer framework-native App Router behavior over custom client orchestration.
 
-Prefer framework-native patterns before introducing custom orchestration.
+Repository-local explicit conventions override these defaults.
 
-## Core Principles
+## Server and client boundaries
 
-- Prefer Server Components by default.
-- Keep client boundaries intentional.
-- Prefer server-side data ownership when practical.
-- Keep rendering behavior explicit.
-- Avoid unnecessary client-side effects and state duplication.
-- Prefer framework-native data flow over custom client orchestration.
+Prefer Server Components by default.
 
-## Server vs Client Components
+Add `"use client"` only when the owned behavior requires client runtime capabilities such as interaction state, browser APIs, client-only hooks, animation, or imperative libraries.
 
-Prefer Server Components unless client interactivity is required.
+Keep client boundaries as narrow as the owned interactive workflow permits. Do not make a page or layout client-side merely because one descendant needs interaction.
 
-Good reasons for `"use client"`:
+Do not move state upward solely to avoid a client boundary. Compose with `ownership-boundaries` and `react-component-ownership` to place the boundary around the actual owner.
 
-- browser APIs
-- local interactive UI state
-- animations
-- imperative UI libraries
-- client-side event handling
-- hooks that require the client runtime
+## Data ownership
 
-Do not add `"use client"` automatically.
+Prefer server-side ownership for initial, authenticated, database-backed, route-driven, or SEO-relevant data when practical.
 
-Avoid pushing large trees into client rendering unnecessarily.
+Avoid duplicating the same server state into client fetching or global client stores without a real lifecycle or interaction requirement.
 
-## Client Boundary Discipline
+Keep async ownership close to the route or domain boundary that owns it. Avoid client fetch waterfalls and duplicated loading orchestration when server composition can express the flow directly.
 
-Keep client boundaries small and intentional.
+Use `loading.tsx`, Suspense, route boundaries, and framework-native async rendering when they match the ownership boundary.
 
-Prefer:
+## Effects and mutations
 
-```txt
-Server Page
-  -> Small Client Component
-```
+Do not use client effects for work that belongs to server rendering, derived render state, routing state, or explicit user events.
 
-over:
+Use Server Actions when server-owned mutations or form workflows benefit from them, but do not turn them into an opaque RPC layer. Keep authorization, side effects, and ownership traceable.
 
-```txt
-Entire page = client component
-```
+## Routing and layouts
 
-Avoid turning layouts/pages client-side unless required.
+Keep route structure aligned with product or domain ownership.
 
-## Routing Structure
+Use layouts for genuinely shared route structure and persistent shells. Do not turn layouts into dumping grounds for unrelated business logic.
 
-Prefer predictable route ownership.
+Keep errors close to the route or workflow boundary that can meaningfully recover or explain the failure.
 
-Example:
+Use framework-native metadata for route-specific SEO rather than scattering metadata behavior through unrelated components.
 
-```txt
-app/
-  dashboard/
-    page.tsx
-    loading.tsx
-    error.tsx
-```
+## Cache and revalidation
 
-Keep route structure aligned with product/domain structure.
+Make cache behavior intentional.
 
-Avoid deeply confusing route nesting without UX justification.
+Do not disable caching globally because the active rendering or invalidation model is unclear.
 
-## Data Fetching
+When correctness depends on freshness, identify the owner of invalidation/revalidation and verify the active Next.js version's semantics rather than relying on remembered defaults.
 
-Prefer server-side data fetching when practical.
+## PWA and service workers
 
-Prefer:
+Add PWA behavior only when the product requires installability, offline behavior, push, background behavior, or explicit caching.
 
-- Server Components
-- route handlers
-- server actions when appropriate
-- framework-native caching/revalidation
-
-Avoid unnecessary client-side fetching for initial page data.
-
-Do not duplicate the same fetch across server and client unnecessarily.
-
-## Async Discipline
-
-Prefer async ownership close to the route or domain boundary.
-
-Avoid:
-
-- cascading client fetch waterfalls
-- deeply nested loading orchestration
-- duplicated loading states
-- fetching inside many unrelated child components
-
-Prefer predictable loading boundaries using:
-
-- `loading.tsx`
-- Suspense
-- route-level async ownership
-
-## State Ownership
-
-Keep state ownership clear.
-
-Use client state for:
-
-- local UI interaction
-- ephemeral UI behavior
-- client-only workflows
-
-Prefer server ownership for:
-
-- initial data
-- authenticated data
-- database-backed state
-- SEO-relevant content
-- route-driven data
-
-Avoid duplicating server state unnecessarily into client global stores.
-
-## Effects Discipline
-
-Avoid unnecessary `useEffect`.
-
-Do not use effects for:
-
-- initial server data loading
-- derived values
-- framework-native routing state
-- things that can be rendered directly
-
-Prefer:
-
-- async Server Components
-- server actions
-- explicit event handlers
-- derived render values
-
-over effect-heavy orchestration.
-
-## Server Actions
-
-Use server actions intentionally.
-
-Good use cases:
-
-- forms
-- mutations
-- authenticated operations
-- simple server-side workflows
-
-Avoid turning server actions into hidden RPC systems.
-
-Keep ownership and side effects understandable.
-
-## Caching and Revalidation
-
-Prefer explicit cache behavior.
-
-Understand:
-
-- static rendering
-- dynamic rendering
-- revalidation
-- cache invalidation
-
-Do not disable caching globally out of confusion.
-
-Avoid cargo-cult cache configuration.
-
-## Layout Discipline
-
-Use layouts for:
-
-- shared navigation
-- shared UI structure
-- route grouping
-- persistent shells
-
-Avoid putting unrelated business logic into layouts.
-
-## Error Handling
-
-Use:
-
-- `error.tsx`
-- route-level boundaries
-- predictable fallback behavior
-
-Keep error ownership close to the failing boundary.
-
-Avoid giant global catch-all UX for unrelated failures.
-
-## SEO / Metadata
-
-Prefer framework-native metadata handling.
-
-Use metadata intentionally for:
-
-- titles
-- descriptions
-- OG tags
-- route-specific SEO
-
-Avoid scattering SEO logic across unrelated components.
-
-## Performance
-
-Optimize based on actual bottlenecks.
-
-Prefer:
-
-- Server Components
-- streaming/Suspense when useful
-- smaller client bundles
-- intentional dynamic imports
-- route-level ownership
-
-Avoid premature optimization complexity.
-
-## Tailwind / shadcn / Radix
-
-Current preferred UI stack:
-
-- Tailwind CSS
-- shadcn/ui
-- Radix UI
-
-Keep styling and component boundaries maintainable.
-
-Do not couple routing/rendering logic tightly with UI library internals.
-
-## Review Checklist
-
-When reviewing Next.js App Router code, ask:
-
-- Does this really need `"use client"`?
-- Is data owned at the correct boundary?
-- Is fetching duplicated unnecessarily?
-- Is rendering behavior predictable?
-- Is routing structure understandable?
-- Can this be simpler?
-- Is state duplicated between server and client?
-- Is async behavior easy to trace?
-- Would another developer understand this quickly?
-
-## PWA Discipline
-
-Use PWA features intentionally when the product needs installability, offline behavior, push notifications, or app-like UX.
-
-Core PWA areas:
-
-- web app manifest
-- service worker
-- offline fallback
-- installability
-- push notifications when needed
-- caching strategy
-- local testing
-- security
-
-Prefer Next.js App Router PWA conventions when available.
-
-Keep PWA behavior explicit and testable.
-
-Do not add service workers casually. Service workers can create confusing cache bugs if ownership and update behavior are unclear.
-
-## Manifest
-
-Use a web app manifest when the app should be installable or app-like.
-
-Keep manifest values intentional:
-
-- name
-- short_name
-- icons
-- start_url
-- display
-- theme_color
-- background_color
-
-Do not leave placeholder metadata in production.
-
-## Service Worker
-
-Add a service worker only when the app has clear offline, caching, push, or background behavior requirements.
-
-When using a service worker, define:
+A service worker must have clear ownership for:
 
 - what is cached
-- when cache updates
-- offline fallback behavior
-- how stale assets are handled
-- how users receive updates
+- update and invalidation behavior
+- stale assets
+- offline fallback
+- failed mutations or retry behavior
+- how users receive updated application code
 
-Avoid mysterious service worker behavior that makes production bugs hard to reproduce.
+Do not imply offline support when only static assets are cached.
 
-## Offline Behavior
+Notification permission prompts should be contextual and user-triggered rather than automatic on first load.
 
-If offline support exists, design it explicitly.
+## Composition
 
-Prefer:
+- `ownership-boundaries` owns general state and behavior ownership.
+- `react-component-ownership` maps ownership into React component boundaries.
+- `file-structure` owns project file organization and naming.
+- `layout-system` owns structural layout and responsive behavior.
+- `tooling-feedback` owns framework diagnostics on touched code.
 
-- clear offline fallback UI
-- predictable cached pages/assets
-- safe handling of failed mutations
-- user-visible retry behavior
+This skill should contain Next.js-specific decisions, not duplicate those policies.
 
-Do not imply offline support if only static assets are cached.
+## Verification
 
-## Push Notifications
+For touched App Router behavior, verify:
 
-Use push notifications only when product value is clear.
-
-Keep permission prompts intentional and user-triggered.
-
-Do not ask for notification permission on first page load without context.
-
-## PWA Testing
-
-Test PWA behavior locally and in production-like builds.
-
-Verify:
-
-- manifest loads correctly
-- service worker registers correctly
-- install prompt works where supported
-- offline fallback behaves correctly
-- cache update behavior is understandable
-- no secrets are exposed to client-side code
+- each client boundary is required by client-owned behavior
+- server-owned data is not duplicated into client state without reason
+- loading/error/mutation ownership is traceable
+- cache and revalidation semantics match the active Next.js version
+- route and layout boundaries reflect meaningful ownership
+- PWA/service-worker behavior has explicit cache/update/offline semantics when present

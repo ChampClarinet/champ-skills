@@ -9,6 +9,7 @@ Originally based on [`9arm-skills`](https://github.com/thananon/9arm-skills), th
 Skills live under `skills/`, grouped into categories:
 
 - `engineering/` — debugging, review, RCA, and engineering workflows
+- `design/` — landing-page strategy and existing-UI visual refinement
 - `productivity/` — communication and workflow translation skills
 - `frameworks/` — framework-specific conventions and architecture guidance
 - `personal/` — personal engineering philosophies and decision-making heuristics
@@ -85,7 +86,14 @@ Then debug this issue.
 
 Or through a global `AGENTS.md` setup.
 
+For Codex automatic skill discovery, link the skills into `~/.agents/skills/` with `./scripts/link-skills.sh codex`. The router composes discovered skills; it does not replace their installation.
+
 ## Reference
+
+### Design
+
+- **[landing-page-design](./skills/design/landing-page-design/SKILL.md)** — Design new conversion-focused landing pages, campaign pages and marketing heroes.
+- **[unslop](./skills/design/unslop/SKILL.md)** — Audit and refine existing UI that looks generic or AI-generated.
 
 ### Engineering
 

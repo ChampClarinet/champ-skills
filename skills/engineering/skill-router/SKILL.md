@@ -42,6 +42,22 @@ Prefer one canonical owner for each concern:
 - actionable touched-surface diagnostics: `tooling-feedback`
 - Git/commit discipline: `git-workflow`
 
+## Visual design routing
+
+**Hard routing rule:** whenever a task creates, edits, fixes, reviews, or implements user-facing UI (including components, pages, dashboards, responsive fixes, accessibility fixes, and Figma-to-code), load **at least one applicable design skill** alongside the relevant implementation skills. This is required even if the user did not explicitly ask for visual polish. The design skill must respect the requested scope; loading it does **not** authorize redesign or unrelated styling changes.
+
+Choose the design owner by intent. Load `landing-page-design` for new conversion-focused marketing pages; otherwise load `unslop` as the lightweight visual-consistency guardrail for existing or general-purpose UI. Do not load both by default. For purely backend, data, or non-UI tasks, neither is required.
+
+- **New conversion-focused landing page, campaign page, waitlist, or marketing hero**: use `landing-page-design` as the design owner. Use framework-specific skills only when their mechanics matter.
+- **Existing UI that looks generic, AI-generated, inconsistent, or visually unfinished**: use `unslop` as the visual-audit and refinement owner. Keep product behavior and existing brand unless the user explicitly requests a redesign.
+- **New landing page that also needs a polish pass**: `landing-page-design` first; activate `unslop` only if a subsequent review identifies concrete slop. Do not force a second pass.
+- **Bug fix, responsive defect, accessibility repair, or Figma-to-code implementation involving UI**: load `unslop` alongside the relevant engineering or implementation skill. Perform only the requested fix; do not expand into a visual redesign.
+- **General dashboard/component implementation**: load `unslop` for visual consistency, not `landing-page-design` merely because the task contains styling.
+
+For any repo modification, retain `scope-discipline`. Existing project tokens, component library, branding, and explicit user constraints outrank either design skill. Avoid duplicate owners for typography, spacing, or visual polish. When the user requests no redesign, avoid expanding the visual scope.
+
+**Discovery caveat:** The always-load rule is enforced only when the agent has discovered and activated this router. Codex can select the new skills automatically only when their `SKILL.md` files are installed in a discoverable skills directory. A router file alone does not install or globally activate them.
+
 ## Conflict handling
 
 When active skills appear to disagree:

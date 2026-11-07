@@ -1,6 +1,6 @@
 ---
 name: unslop
-description: Audit and refine existing dashboards, apps and web pages that look generic, AI-generated or visually inconsistent. Use for visual polish and anti-slop requests; do not activate for ordinary UI bug fixes or new landing-page strategy.
+description: Visual consistency guardrail for any UI work, including building or editing components, dashboards, pages, responsive/accessibility fixes, and Figma-to-code. Audit and refine generic-looking UI when requested; for ordinary UI tasks, preserve scope and do not redesign.
 license: CC-BY-4.0
 metadata:
   original-author: Damir Sokolovsky
@@ -9,9 +9,14 @@ metadata:
 
 # Unslop
 
-Improve an existing interface by identifying **observable** visual defects and fixing only what matters. The result should feel specific to its product, not merely less decorative.
+For any UI work, apply a lightweight visual-consistency check. When visual refinement is requested, improve the interface by identifying **observable** visual defects and fixing only what matters. The result should feel specific to its product, not merely less decorative.
 
 Adapted from [unslop](https://github.com/heydamir/unslop) by **Damir Sokolovsky**, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Retain this attribution and link in redistributed adaptations.
+
+## Activation modes
+
+- **UI implementation / UI bug fix (always loaded):** inspect existing design tokens and nearby UI conventions; make the requested change only. Check visual consistency, responsive impact and accessibility on the touched surface. Do not launch a full aesthetic audit or make unsolicited styling edits.
+- **Visual polish / anti-slop request:** run the full audit and scoped refinement below.
 
 ## Audit before editing
 
@@ -40,4 +45,4 @@ Compare before and after against the audit. Verify affected viewports, keyboard 
 
 - This skill owns **existing-interface visual diagnosis and refinement**.
 - `landing-page-design` owns **new conversion-page strategy and initial design**. Load both only if a new page later demonstrates concrete visual problems.
-- Use relevant engineering skills for bugs, responsive correctness, component ownership and testing. Do not widen scope into a full redesign by default.
+- Use relevant engineering skills for bugs, responsive correctness, component ownership and testing. Load this skill for UI work but do not widen scope into a full redesign by default.

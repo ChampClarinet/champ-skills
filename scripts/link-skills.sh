@@ -5,7 +5,11 @@ set -euo pipefail
 # they can be used by the local Claude CLI.
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-DEST="$HOME/.claude/skills"
+case "${1:-claude}" in
+  claude) DEST="$HOME/.claude/skills" ;;
+  codex) DEST="$HOME/.agents/skills" ;;
+  *) echo "usage: $0 [claude|codex]" >&2; exit 2 ;;
+esac
 
 # If ~/.claude/skills is a symlink that resolves into this repo, we'd end up
 # writing the per-skill symlinks back into the repo's own skills/ tree. Detect

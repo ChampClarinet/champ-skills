@@ -42,6 +42,20 @@ Prefer one canonical owner for each concern:
 - actionable touched-surface diagnostics: `tooling-feedback`
 - Git/commit discipline: `git-workflow`
 
+## Visual design routing
+
+After normal skill discovery, choose a design skill by the **primary outcome**, not by broad words such as "UI", "frontend", or "design". Do not load both design skills by default.
+
+- **New conversion-focused landing page, campaign page, waitlist, or marketing hero**: use `landing-page-design` as the design owner. Use framework-specific skills only when their mechanics matter.
+- **Existing UI that looks generic, AI-generated, inconsistent, or visually unfinished**: use `unslop` as the visual-audit and refinement owner. Keep product behavior and existing brand unless the user explicitly requests a redesign.
+- **New landing page that also needs a polish pass**: `landing-page-design` first; activate `unslop` only if a subsequent review identifies concrete slop. Do not force a second pass.
+- **Bug fix, responsive defect, accessibility repair, or Figma-to-code implementation**: use the relevant engineering or implementation skill. Add `unslop` only if the request also calls for aesthetic refinement.
+- **General dashboard/component implementation**: do not activate `landing-page-design` merely because it contains visual styling.
+
+For any repo modification, retain `scope-discipline`. Existing project tokens, component library, branding, and explicit user constraints outrank either design skill. Avoid duplicate owners for typography, spacing, or visual polish. When the user requests no redesign, avoid expanding the visual scope.
+
+**Discovery caveat:** This router composes skills after discovery. Codex can select the new skills automatically only when their `SKILL.md` files are installed in a discoverable skills directory. A router file alone does not install or globally activate them.
+
 ## Conflict handling
 
 When active skills appear to disagree:

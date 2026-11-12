@@ -94,6 +94,9 @@ For Codex automatic skill discovery, link the skills into `~/.agents/skills/` wi
 
 - **[landing-page-design](./skills/design/landing-page-design/SKILL.md)** — Design new conversion-focused landing pages, campaign pages and marketing heroes.
 - **[unslop](./skills/design/unslop/SKILL.md)** — Audit and refine existing UI that looks generic or AI-generated.
+- **[chart-selection](./skills/design/chart-selection/SKILL.md)** — Choose truthful chart types and visual encodings based on analytical questions and data shape.
+- **[dashboard-design](./skills/design/dashboard-design/SKILL.md)** — Structure actionable dashboards with KPI hierarchy, panels, filters, and states.
+- **[data-viz-review](./skills/design/data-viz-review/SKILL.md)** — Audit charts and dashboards for misleading presentation, data fidelity, and accessibility.
 
 ### Engineering
 

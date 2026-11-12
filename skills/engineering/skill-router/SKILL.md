@@ -46,13 +46,16 @@ Prefer one canonical owner for each concern:
 
 **Hard routing rule:** whenever a task creates, edits, fixes, reviews, or implements user-facing UI (including components, pages, dashboards, responsive fixes, accessibility fixes, and Figma-to-code), load **at least one applicable design skill** alongside the relevant implementation skills. This is required even if the user did not explicitly ask for visual polish. The design skill must respect the requested scope; loading it does **not** authorize redesign or unrelated styling changes.
 
-Choose the design owner by intent. Load `landing-page-design` for new conversion-focused marketing pages; otherwise load `unslop` as the lightweight visual-consistency guardrail for existing or general-purpose UI. Do not load both by default. For purely backend, data, or non-UI tasks, neither is required.
+Choose the design owner by intent. For analytical dashboards, use `dashboard-design` as the information-architecture owner, `chart-selection` for chart semantics, and `data-viz-review` for explicit audits. Use `unslop` only when general visual consistency or implementation polish is relevant; it does not replace analytical design. Do not automatically load all three visualization skills. Load `landing-page-design` for new conversion-focused marketing pages; otherwise load `unslop` as the lightweight visual-consistency guardrail for existing or general-purpose UI. Do not load both by default. For purely backend, data, or non-UI tasks, neither is required.
 
 - **New conversion-focused landing page, campaign page, waitlist, or marketing hero**: use `landing-page-design` as the design owner. Use framework-specific skills only when their mechanics matter.
 - **Existing UI that looks generic, AI-generated, inconsistent, or visually unfinished**: use `unslop` as the visual-audit and refinement owner. Keep product behavior and existing brand unless the user explicitly requests a redesign.
 - **New landing page that also needs a polish pass**: `landing-page-design` first; activate `unslop` only if a subsequent review identifies concrete slop. Do not force a second pass.
 - **Bug fix, responsive defect, accessibility repair, or Figma-to-code implementation involving UI**: load `unslop` alongside the relevant engineering or implementation skill. Perform only the requested fix; do not expand into a visual redesign.
-- **General dashboard/component implementation**: load `unslop` for visual consistency, not `landing-page-design` merely because the task contains styling.
+- **New dashboard or substantial dashboard information-architecture work**: load `dashboard-design`; add `chart-selection` when choosing or changing charts. Add `unslop` only for visual consistency or UI implementation concerns.
+- **Chart selection or visualization semantics without dashboard layout work**: load `chart-selection` directly.
+- **Chart/dashboard truthfulness or accessibility audit**: load `data-viz-review` directly; add other design skills only when the task calls for fixes.
+- **Existing dashboard cosmetic or responsive fix, or general component implementation**: load `unslop` for visual consistency, not `dashboard-design` or `landing-page-design` merely because the component appears on a dashboard.
 
 For any repo modification, retain `scope-discipline`. Existing project tokens, component library, branding, and explicit user constraints outrank either design skill. Avoid duplicate owners for typography, spacing, or visual polish. When the user requests no redesign, avoid expanding the visual scope.
 

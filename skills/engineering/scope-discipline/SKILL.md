@@ -27,6 +27,14 @@ For every proposed modification, ask:
 
 If not, leave it out of the current patch.
 
+## Scope decomposition
+
+Decompose substantial work by cohesive outcomes and responsibility boundaries, not lines of code, file count, or arbitrary task size. Each unit should be bounded, verifiable, independently reviewable, and complete within its intended scope.
+
+## Structural freedom within scope
+
+Preserve intended behavior and external contracts, not necessarily existing implementation. Prefer the smallest correct and maintainable solution, not the smallest textual diff. When the current structure obstructs the requested outcome, consider replacing that structure rather than accumulating local workarounds. A substantial rewrite within the approved scope is not inherently scope expansion. Keep supporting changes necessary and proportionate; ask before changing consequential contracts or expanding scope.
+
 ## In-scope supporting work
 
 A supporting change is in scope when the requested outcome cannot be implemented or validated safely without it.

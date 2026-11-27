@@ -11,3 +11,7 @@ Compare baseline and candidate under equivalent conditions. Repeat when nondeter
 The initial cases are manual evaluation specifications. No automated agent runner or fixture implementation is supplied yet. Prepare the stated fixture before running a case; if unavailable, mark it unverified. Do not claim runtime coverage from reviewing this document.
 
 Add cases for consequential recurring failures or meaningful policy changes. Prefer a minimal reproducible scenario and observable rubric over a transcript. Keep application regressions in application tests. Never weaken a rubric merely to make a candidate pass.
+
+## Result tracking
+
+Record meaningful evaluation campaigns in [results/](./results/README.md) using the report template. Keep historical comparisons and regressions, not routine session logs. Never create fabricated baseline or candidate results.

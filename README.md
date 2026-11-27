@@ -9,6 +9,7 @@ Originally based on [`9arm-skills`](https://github.com/thananon/9arm-skills), th
 Skills live under `skills/`, grouped into categories:
 
 - `engineering/` — debugging, review, RCA, and engineering workflows
+- `design/` — landing-page strategy and existing-UI visual refinement
 - `productivity/` — communication and workflow translation skills
 - `frameworks/` — framework-specific conventions and architecture guidance
 - `personal/` — personal engineering philosophies and decision-making heuristics
@@ -85,9 +86,21 @@ Then debug this issue.
 
 Or through a global `AGENTS.md` setup.
 
+For Codex automatic skill discovery, link the skills into `~/.agents/skills/` with `./scripts/link-skills.sh codex`. The router composes discovered skills; it does not replace their installation.
+
 ## Reference
 
+### Design
+
+- **[landing-page-design](./skills/design/landing-page-design/SKILL.md)** — Design new conversion-focused landing pages, campaign pages and marketing heroes.
+- **[unslop](./skills/design/unslop/SKILL.md)** — Audit and refine existing UI that looks generic or AI-generated.
+- **[chart-selection](./skills/design/chart-selection/SKILL.md)** — Choose truthful chart types and visual encodings based on analytical questions and data shape.
+- **[dashboard-design](./skills/design/dashboard-design/SKILL.md)** — Structure actionable dashboards with KPI hierarchy, panels, filters, and states.
+- **[data-viz-review](./skills/design/data-viz-review/SKILL.md)** — Audit charts and dashboards for misleading presentation, data fidelity, and accessibility.
+
 ### Engineering
+
+- **[visual-verification](./skills/engineering/visual-verification/SKILL.md)** — Verify actual rendered appearance when visual correctness is material to acceptance criteria.
 
 - **[skill-router](./skills/engineering/skill-router/SKILL.md)** — Compose relevant skills, resolve authority, and avoid redundant or conflicting instruction loads.
 - **[agent-orchestration](./skills/engineering/agent-orchestration/SKILL.md)** — Choose economically useful single- or multi-agent execution with durable state when continuation needs it.
@@ -105,6 +118,8 @@ Or through a global `AGENTS.md` setup.
 - **[paranoid](./skills/engineering/paranoid/SKILL.md)** — Aggressive pre-ship verification of edge cases, failure paths, races, compatibility, and test blind spots.
 
 ### Productivity
+
+- **[show-me](./skills/productivity/show-me/SKILL.md)** — Explain complex requirements, plans, and changes with the smallest effective visual representation.
 
 - **[management-talk](./skills/productivity/management-talk/SKILL.md)** — Rewrite engineering content for leadership, stakeholders, or cross-functional communication while preserving technical accuracy.
 

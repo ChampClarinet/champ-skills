@@ -95,6 +95,10 @@ Do not let a framework adapter silently override a repository rule or a champ ha
 
 Reassess this condition when investigation reveals a visual failure or a visual acceptance criterion not apparent at initial routing. Keep the primary workflow and existing design routing intact. If runtime verification is unavailable, report affected criteria as unverified rather than treating static checks or mockups as equivalent evidence.
 
+## Planning routing
+
+Apply `agent-orchestration` when uncertainty, impact, irreversibility, or expected rework makes planning materially valuable, even for a single agent. Keep routine reversible work lightweight. Use `rubberduck` for explicit interactive reasoning requests, not as a mandatory planning phase.
+
 ## Execution topology
 
 Domain skills may identify separable, parallelizable, or independently verifiable work. They do not prescribe agent counts or fixed roles.

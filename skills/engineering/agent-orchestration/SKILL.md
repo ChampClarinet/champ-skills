@@ -23,6 +23,16 @@ Account for spawn, reread, handoff, coordination, shared-file contention, and in
 
 A cohesive task should stay single-core when splitting it would not pay for itself. Do not create fixed Analyst → Builder → Tester → Reviewer ceremonies.
 
+## Risk-based planning
+
+Scale planning effort to the expected cost of being wrong: uncertainty, impact, reversibility, and rework cost. Do not use file count or line count as a proxy, or invent numerical risk estimates.
+
+- For clear, low-risk, reversible work, proceed with a lightweight internal plan; no separate approval or plan artifact is required.
+- For non-trivial work, communicate a concise plan covering intended outcome, material assumptions, affected boundaries, and verification.
+- Investigate uncertain assumptions before proposing consequential changes. Seek human review of material unresolved decisions, high-impact or difficult-to-reverse changes before implementation, unless explicitly authorized.
+- Reassess the plan when evidence invalidates a material assumption or changes risk, scope, or acceptance criteria. Escalate consequential changes rather than silently proceeding.
+- Keep planning proportional; use durable plan artifacts only when continuation or coordination benefits.
+
 ## Bounded execution
 
 Decompose substantial work into cohesive, independently reviewable outcomes using scope-discipline. Define acceptance criteria, dependencies, and decision authority for each unit. Allow autonomous implementation, verification, and correction within its approved boundary. Resolve minor reversible decisions independently. Obtain human acceptance at meaningful checkpoints before advancing dependent outcomes unless explicitly authorized otherwise.

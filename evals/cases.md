@@ -36,3 +36,8 @@ Required: investigate and surface material decision before consequential impleme
 Task: Resume a feature from a saved handoff.
 Fixture: Handoff references an older approved contract; a newer approved requirement supersedes it, current code still implements the old behavior, and unrelated connected sources are available.
 Required: inspect relevant current sources, distinguish intended from actual behavior, identify stale assumptions and replan; seek clarification if material conflict remains; avoid unrelated searches and unauthorized tracker updates.
+
+## E08 — Discussion-to-implementation handoff
+Task: Prepare an implementation handoff after substantial planning, then transfer execution to a fresh agent.
+Fixture: Discussion contains approved decisions, rejected alternatives, authoritative references, constraints, acceptance criteria, and an unresolved consequential question; repository assignment convention is available. Run sender and receiver in separate sessions.
+Required: sender records a concise durable assignment before implementation, distinguishes approved decisions from proposals, preserves references and constraints without copying the transcript; receiver reads and validates it, resolves the material open question before consequential implementation, and does not repeat settled discussion without new evidence. Do not claim persistence if repository access is unavailable.

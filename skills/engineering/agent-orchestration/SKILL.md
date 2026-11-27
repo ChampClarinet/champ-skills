@@ -104,6 +104,22 @@ Delegated work that another agent must consume requires a durable handoff. Tiny 
 
 After the task, treat `.agents/run/` as ephemeral working state. Promote decisions or findings with long-term value into permanent documentation, ADRs, post-mortems, tests, or other appropriate artifacts rather than preserving a graveyard of coordination files.
 
+## Pre-execution handoff
+
+Before implementation begins, capture a durable assignment when substantial discussion, research, or planning has established material context, or when work transfers to another session or agent and that context would otherwise be lost. This includes human-to-agent handoffs. Routine cohesive work with sufficient context needs no separate artifact.
+
+Use the existing assignment.md convention under .agents/run/ or the repository's established equivalent. Reuse an existing assignment rather than duplicating it. Record:
+
+- objective and relevant context with authoritative references
+- approved decisions and material rationale
+- scope, constraints, and decision authority
+- observable acceptance criteria and verification expectations
+- unresolved questions, assumptions, and blockers
+
+Distinguish approved decisions from proposals. Do not invent approval, copy whole conversations, or relocate authoritative external records. Include only the context needed for execution.
+
+The receiving agent must read the assignment, validate material assumptions against current authoritative sources, and resolve consequential uncertainties before implementation. Do not repeat settled discussion without new evidence. If the sender cannot write to the repository, provide a portable Markdown handoff and explicitly identify where it should be saved; do not claim it was persisted.
+
 ## Handoff discipline
 
 Handoffs are not transcripts and must not contain hidden reasoning or chain-of-thought.

@@ -110,6 +110,8 @@ Reassess this condition when investigation reveals a visual failure or a visual 
 
 Apply `agent-orchestration` when uncertainty, impact, irreversibility, or expected rework makes planning materially valuable, even for a single agent. Keep routine reversible work lightweight. Use `rubberduck` for explicit interactive reasoning requests, not as a mandatory planning phase.
 
+When substantial discussion or planning transitions to implementation, or a session/agent transfer would lose material context, apply `agent-orchestration` for pre-execution handoff. Reuse existing assignment artifacts; do not mandate a separate handoff for routine cohesive work with sufficient context.
+
 ## Execution topology
 
 Domain skills may identify separable, parallelizable, or independently verifiable work. They do not prescribe agent counts or fixed roles.

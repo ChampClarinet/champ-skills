@@ -102,6 +102,12 @@ Examples include:
 
 The post-mortem records what happened. The appropriate permanent artifact should encode what the system should remember.
 
+## Agent workflow lessons
+
+When a consequential or recurring agent failure exposes a reusable lesson, record observable behavior, expected behavior, evidence, and the suspected or established escape path. Distinguish a policy gap from discovery, tooling, execution, or model adherence failures; do not infer the cause from a bad outcome alone. If a corrective change has not been validated, label the lesson provisional rather than presenting a completed RCA.
+
+Promote the lesson to the narrowest appropriate owner: application test, repository rule, skill, tooling, or agent behavior evaluation. An agent eval should reproduce the relevant conditions and score observable behavior. Do not automatically rewrite global skills or create an eval for every minor mistake; obtain authorization for changes outside the current scope. Sanitize private session data.
+
 ## Tone
 
 Write for engineers.

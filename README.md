@@ -121,6 +121,9 @@ See [manual evaluation protocol](./evals/README.md) and [initial regression case
 - **[archaeologist](./skills/engineering/archaeologist/SKILL.md)** — Investigate callers, history, contracts, and old constraints before changing legacy code.
 - **[paranoid](./skills/engineering/paranoid/SKILL.md)** — Aggressive pre-ship verification of edge cases, failure paths, races, compatibility, and test blind spots.
 
+- [bun-monorepo](skills/engineering/bun-monorepo/SKILL.md)
+- [git-workflow](skills/engineering/git-workflow/SKILL.md)
+
 ### Productivity
 
 - **[show-me](./skills/productivity/show-me/SKILL.md)** — Explain complex requirements, plans, and changes with the smallest effective visual representation.
@@ -131,6 +134,22 @@ See [manual evaluation protocol](./evals/README.md) and [initial regression case
 
 - **[file-structure](./skills/frameworks/file-structure/SKILL.md)** — File organization rules for maintainable component and class structure.
 - **[react-component-ownership](./skills/frameworks/react-component-ownership/SKILL.md)** — Apply ownership-boundary principles to React state, effects, queries, dialogs, tabs, forms, and component composition.
+
+- [tailwind-discipline](skills/frameworks/css/tailwind-discipline/SKILL.md)
+- [elysiajs](skills/frameworks/elysiajs/SKILL.md)
+- [architecture](skills/frameworks/flutter/architecture/SKILL.md)
+- [routing-discipline](skills/frameworks/go-router/routing-discipline/SKILL.md)
+- [layout-system](skills/frameworks/layout-system/SKILL.md)
+- [motion-discipline](skills/frameworks/motion/motion-discipline/SKILL.md)
+- [app-router-discipline](skills/frameworks/next/app-router-discipline/SKILL.md)
+- [component-discipline](skills/frameworks/react/component-discipline/SKILL.md)
+- [form-discipline](skills/frameworks/react-hook-form/form-discipline/SKILL.md)
+- [state-discipline](skills/frameworks/redux-toolkit/state-discipline/SKILL.md)
+- [provider-discipline](skills/frameworks/riverpod/provider-discipline/SKILL.md)
+- [shadcn-ui](skills/frameworks/shadcn-ui/SKILL.md)
+- [app-discipline](skills/frameworks/tanstack-start/app-discipline/SKILL.md)
+- [type-discipline](skills/frameworks/typescript/type-discipline/SKILL.md)
+- [project-discipline](skills/frameworks/vite/project-discipline/SKILL.md)
 
 ### Personal
 

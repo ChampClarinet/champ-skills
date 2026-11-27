@@ -6,3 +6,7 @@
 For automatic selection, install these skills in a Codex-discoverable skills directory and let [skill-router](../engineering/skill-router/SKILL.md) compose them with engineering skills.
 
 For **every user-facing UI task**, load at least one design skill: `landing-page-design` for new conversion-focused marketing pages, otherwise `unslop` in lightweight visual-consistency mode. This does not permit out-of-scope visual changes.
+
+- [chart-selection](chart-selection/SKILL.md)
+- [dashboard-design](dashboard-design/SKILL.md)
+- [data-viz-review](data-viz-review/SKILL.md)

@@ -14,3 +14,8 @@
 - **[skeptic](./skeptic/SKILL.md)** — Challenge implementation assumptions with evidence instead of agreeing by default.
 - **[archaeologist](./archaeologist/SKILL.md)** — Recover the reason legacy code exists before modernizing or deleting it.
 - **[paranoid](./paranoid/SKILL.md)** — Adversarial pre-ship pass for hidden failure paths and false confidence.
+
+- [bun-monorepo](bun-monorepo/SKILL.md)
+- [git-workflow](git-workflow/SKILL.md)
+- [verification](verification/SKILL.md)
+- [visual-verification](visual-verification/SKILL.md)

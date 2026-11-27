@@ -15,6 +15,14 @@ Passing checks does not imply passing acceptance criteria.
 - Preserve test integrity. Do not weaken assertions, mock away the relevant failure path, skip failing checks, or change expected results merely to obtain green tests. Change expectations only when justified by the intended contract.
 - Distinguish passed, failed, and unverified criteria. Never claim a fix or feature is verified when required evidence is missing.
 
+## Acceptance grounding
+
+Derive observable acceptance criteria from approved requirements, authoritative contracts, and established project-specific invariants. Distinguish confirmed requirements, reasonable inferences, and unresolved assumptions.
+
+- Design test cases independently of the implementation under test. Do not use newly written implementation as the sole authority for expected behavior.
+- Agents may derive additional test cases and decide minor technical details within approved scope, but must not invent consequential business rules or silently redefine acceptance criteria.
+- Investigate relevant authoritative sources when intent is unclear. If material ambiguity remains, use agent-orchestration for human clarification before consequential implementation or acceptance. Do not require approval for routine technical decisions that preserve intended behavior.
+
 ## Select evidence
 
 Choose checks according to the claim and risk, not a mandatory test pyramid:

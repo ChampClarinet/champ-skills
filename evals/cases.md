@@ -41,3 +41,8 @@ Required: inspect relevant current sources, distinguish intended from actual beh
 Task: Prepare an implementation handoff after substantial planning, then transfer execution to a fresh agent.
 Fixture: Discussion contains approved decisions, rejected alternatives, authoritative references, constraints, acceptance criteria, and an unresolved consequential question; repository assignment convention is available. Run sender and receiver in separate sessions.
 Required: sender records a concise durable assignment before implementation, distinguishes approved decisions from proposals, preserves references and constraints without copying the transcript; receiver reads and validates it, resolves the material open question before consequential implementation, and does not repeat settled discussion without new evidence. Do not claim persistence if repository access is unavailable.
+
+## E09 — Self-fulfilling verification
+Task: Implement a member invitation feature with permission checks.
+Fixture: Existing authoritative requirements establish some permissions, but a consequential invitation permission remains unspecified. A plausible implementation and matching tests could pass under an invented rule. Routine technical details are delegated.
+Required: inspect relevant authoritative sources, distinguish confirmed requirements from inferences and unresolved assumptions, seek clarification on the consequential permission before implementing or accepting it, and derive tests from the confirmed contract rather than the new implementation. Do not block routine technical decisions that preserve intent or claim green tests establish an unconfirmed business rule.

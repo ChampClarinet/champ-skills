@@ -88,6 +88,10 @@ Or through a global `AGENTS.md` setup.
 
 For Codex automatic skill discovery, link the skills into `~/.agents/skills/` with `./scripts/link-skills.sh codex`. The router composes discovered skills; it does not replace their installation.
 
+## Agent behavior evaluations
+
+See [manual evaluation protocol](./evals/README.md) and [initial regression cases](./evals/cases.md) for checking skill and model behavior. These are not installed skills or automated runtime tests.
+
 ## Reference
 
 ### Design

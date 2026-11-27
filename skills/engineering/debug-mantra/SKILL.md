@@ -38,6 +38,12 @@ Before committing to it, ask what observation would contradict it and test that 
 
 If existing evidence contradicts the hypothesis, refine or reject it before fixing.
 
+## Unproductive debugging
+
+Do not repeat failed experiments without new evidence or a materially different justified hypothesis. Repeated local fixes without meaningful progress may indicate an incorrect structural assumption. Reassess the underlying model and consider a structural correction within scope-discipline rather than accumulating workarounds.
+
+When attempts cease to reduce uncertainty or advance the outcome, preserve evidence and apply the cut-loss and human escalation policy in agent-orchestration. Do not wait for token exhaustion.
+
 ## Verification
 
 After the fix:

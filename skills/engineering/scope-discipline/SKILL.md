@@ -23,17 +23,31 @@ If ambiguity materially changes the requested outcome, ask. Do not interrupt mer
 
 For every proposed modification, ask:
 
-> Is this necessary to achieve or validate the requested outcome safely?
+> Is this necessary to achieve or validate the requested outcome safely and maintainably?
 
 If not, leave it out of the current patch.
 
+## Scope decomposition
+
+Decompose substantial work by cohesive outcomes and responsibility boundaries, not lines of code, file count, or arbitrary task size. Each unit should be bounded, verifiable, independently reviewable, and complete within its intended scope.
+
+## Structural freedom within scope
+
+Preserve intended behavior and external contracts, not necessarily existing implementation. Prefer the smallest correct and maintainable solution, not the smallest textual diff. When the current structure obstructs the requested outcome, consider replacing that structure rather than accumulating local workarounds. A substantial rewrite within the approved scope is not inherently scope expansion. Keep supporting changes necessary and proportionate; ask before changing consequential contracts or expanding scope.
+
+## Maintainability within scope
+
+Do not satisfy a requested change by knowingly introducing avoidable structural debt. When the change exposes or would worsen a concrete maintainability problem, allow proportionate refactoring within the affected responsibility, even if a less maintainable implementation could pass the immediate checks.
+
+Ground the decision in actual requirements, conflicting ownership, duplicated invariants, or demonstrated complexity. Prefer the simplest maintainable solution; do not introduce abstractions for hypothetical future requirements. Keep broader improvements separate.
+
 ## In-scope supporting work
 
-A supporting change is in scope when the requested outcome cannot be implemented or validated safely without it.
+A supporting change is in scope when required for safe implementation or validation, or when proportionate refactoring is justified by the Maintainability within scope policy.
 
 Examples include:
 
-- a narrow refactor required to implement the behavior safely
+- a proportionate refactor needed for safe implementation or to avoid concrete structural debt introduced or worsened by the change
 - tests needed to prove the requested behavior or prevent its regression
 - a blocking defect discovered on the required execution path
 - configuration or API adjustment required by the requested behavior
@@ -73,7 +87,7 @@ For serious security, data-loss, or correctness risks, surface the finding clear
 Refactoring is automatically in scope only when:
 
 - the user explicitly requested it, or
-- a narrow supporting refactor is required for safe implementation or validation.
+- a narrow supporting refactor is required for safe implementation or validation, or proportionate refactoring is justified by the Maintainability within scope policy.
 
 Awkward, duplicated, old, inconsistent, or non-preferred code is not sufficient reason by itself.
 
@@ -100,7 +114,7 @@ Before completion, review the final diff against the requested outcome.
 Every meaningful changed behavior and diff hunk must trace to:
 
 - the requested outcome
-- a necessary supporting change
+- a necessary supporting change, including justified maintainability work
 - required validation
 
 Remove changes justified only by convenience, aesthetics, speculative improvement, unrelated formatting, unnecessary renaming, or opportunistic cleanup.

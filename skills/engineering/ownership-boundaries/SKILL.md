@@ -58,6 +58,10 @@ Do not fetch, compute, or mutate in a parent solely to make an operation reusabl
 
 Do not create a central controller merely to avoid repeated calls to an already reusable operation.
 
+## Ownership evolution
+
+Reassess existing ownership boundaries when adding behavior. Do not extend an existing owner merely because it is convenient. Extract shared behavior only when actual requirements reveal a shared concept or invariant, not superficial similarity or anticipated reuse. Prefer the narrowest cohesive boundary that keeps current behavior understandable and independently maintainable. Apply scope-discipline before restructuring.
+
 ## Decomposition signals
 
 Decompose by responsibility, workflow, lifecycle, and ownership rather than line count.

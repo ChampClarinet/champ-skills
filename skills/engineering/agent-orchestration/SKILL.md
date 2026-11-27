@@ -23,6 +23,26 @@ Account for spawn, reread, handoff, coordination, shared-file contention, and in
 
 A cohesive task should stay single-core when splitting it would not pay for itself. Do not create fixed Analyst → Builder → Tester → Reviewer ceremonies.
 
+## Bounded execution
+
+Decompose substantial work into cohesive, independently reviewable outcomes using scope-discipline. Define acceptance criteria, dependencies, and decision authority for each unit. Allow autonomous implementation, verification, and correction within its approved boundary. Resolve minor reversible decisions independently. Obtain human acceptance at meaningful checkpoints before advancing dependent outcomes unless explicitly authorized otherwise.
+
+## Cut-loss policy
+
+Progress, not remaining budget, justifies continuation. Stop unproductive loops even when execution or token budget remains ample.
+
+- Stop when the same failure repeatedly returns without meaningful new evidence, changes oscillate between failed states, or no materially different justified approach remains.
+- Reassess structural assumptions rather than accumulating local workarounds.
+- Checkpoint before remaining context or execution budget threatens safe completion or a useful handoff, where budget signals are available.
+- Do not repeat failed approaches or spawn replacement agents without new evidence or a materially different strategy.
+- Apply these rules to single agents, workers, and coordinating agents alike.
+
+## Human escalation
+
+When meaningful progress stalls, request human assistance promptly. A coordinating agent may consolidate a worker's evidence but must not delay human SOS through repeated delegation.
+
+Provide the intended outcome, current failure and evidence, attempted approaches and results, remaining uncertainty, and specific help needed. Preserve completed work and a resumable checkpoint. Resume from that state after human input. Do not claim completion while required criteria remain unresolved.
+
 ## Safe concurrency
 
 Before parallel implementation:

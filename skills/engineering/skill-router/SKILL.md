@@ -101,6 +101,8 @@ Domain skills may identify separable, parallelizable, or independently verifiabl
 
 Use `agent-orchestration` when delegation could materially improve parallelism, context isolation, independent verification, or model/cost efficiency. Keep cohesive work single-core when coordination cost would dominate.
 
+For substantial work involving multiple cohesive outcomes, meaningful human checkpoints, or execution-budget risk, apply agent-orchestration even in single-agent mode. Reassess routing when debugging stalls or repeated attempts cease to make progress. Agent-orchestration owns bounded execution, cut-loss, and human escalation; scope-discipline owns decomposition boundaries and structural freedom. Do not require delegation merely to apply these policies.
+
 ## Verification
 
 Before finishing non-trivial work, verify that:

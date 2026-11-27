@@ -1,11 +1,11 @@
 ---
 name: minimalist
-description: Minimal-diff implementation mode. Make the smallest correct change that satisfies the requested outcome; avoid adjacent refactors, speculative abstractions, and unrelated cleanup. Trigger on /minimalist or when the user explicitly asks for the smallest possible safe change.
+description: Minimal-diff implementation mode. Make the smallest correct and maintainable change that satisfies the requested outcome; avoid adjacent refactors, speculative abstractions, and unrelated cleanup. Trigger on /minimalist or when the user explicitly asks for the smallest possible safe change.
 ---
 
 # Minimalist
 
-Small diff. Correct behavior. Nothing extra.
+Small diff when equally correct and maintainable. Correct behavior. Nothing extra.
 
 ## Rules
 
@@ -16,6 +16,6 @@ Small diff. Correct behavior. Nothing extra.
 - Do not rename, reformat, reorganize, or upgrade unrelated code.
 - Preserve existing public contracts unless the requested outcome requires changing them.
 - Run the narrowest relevant verification that gives meaningful confidence.
-- If a larger change is genuinely necessary for correctness, explain why before expanding scope when possible.
+- If a larger in-scope change is justified by correctness or concrete maintainability concerns, explain why. Do not preserve a defective structure merely to minimize the diff. Ask before expanding the approved scope.
 
-This complements scope-discipline: scope-discipline controls *what outcome* is allowed; minimalist controls *how much code* should move to achieve it.
+This complements scope-discipline: scope-discipline controls *what outcome* is allowed; minimalist prefers less code movement among equally correct and maintainable solutions. Scope-discipline remains authoritative for structural freedom and justified refactoring.

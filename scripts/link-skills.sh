@@ -27,6 +27,22 @@ fi
 
 mkdir -p "$DEST"
 
+# Refuse to replace real files or directories. Check all targets before linking
+# so a conflict does not leave a partially updated installation.
+find "$REPO/skills" -name SKILL.md \
+  -not -path '*/node_modules/*' \
+  -not -path '*/deprecated/*' \
+  -not -path '*/in-progress/*' \
+  -not -path '*/personal/*' \
+  -print0 |
+while IFS= read -r -d '' skill_md; do
+  target="$DEST/$(basename "$(dirname "$skill_md")")"
+  if [ -e "$target" ] && [ ! -L "$target" ]; then
+    echo "error: $target exists and is not a symlink; move it before installing." >&2
+    exit 1
+  fi
+done
+
 find "$REPO/skills" -name SKILL.md \
   -not -path '*/node_modules/*' \
   -not -path '*/deprecated/*' \
@@ -37,10 +53,6 @@ while IFS= read -r -d '' skill_md; do
   src="$(dirname "$skill_md")"
   name="$(basename "$src")"
   target="$DEST/$name"
-
-  if [ -e "$target" ] && [ ! -L "$target" ]; then
-    rm -rf "$target"
-  fi
 
   ln -sfn "$src" "$target"
   echo "linked $name -> $src"

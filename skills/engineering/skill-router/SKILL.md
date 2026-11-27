@@ -22,6 +22,12 @@ Repository-local explicit policy overrides champ-skills because the active repos
 
 When two instructions at the same authority level materially conflict and neither can safely satisfy both, surface the conflict, consequences, and options to the user rather than silently choosing.
 
+## Context authority
+
+The instruction hierarchy above governs what the agent may and should do, not which factual claim is true. Distinguish approved requirements (intended behavior), source and runtime evidence (actual behavior), decision records (rationale), and verified task state (progress). A discrepancy is evidence to investigate, not permission to silently overwrite either source.
+
+Use agent-orchestration for context lifecycle when cross-source dependencies, handoffs, stale state, or material conflicting facts affect execution. For routine work, consult only the relevant authoritative sources. Respect access and change boundaries; do not require broad connector searches or external record updates by default.
+
 ## Composition
 
 Load the minimum useful skill set.
@@ -35,10 +41,11 @@ Add optional stance or philosophy skills only when they improve the task. Do not
 Prefer one canonical owner for each concern:
 
 - scope: `scope-discipline`
+- acceptance evidence and verification sufficiency: `verification`
 - behavioral ownership: `ownership-boundaries`
 - physical component/file policy: `file-structure`
 - debugging evidence discipline: `debug-mantra`
-- execution topology and delegation: `agent-orchestration`
+- execution topology, delegation, and context lifecycle: `agent-orchestration`
 - actionable touched-surface diagnostics: `tooling-feedback`
 - Git/commit discipline: `git-workflow`
 
@@ -89,11 +96,21 @@ When active skills appear to disagree:
 
 Do not let a framework adapter silently override a repository rule or a champ hard policy.
 
+## General verification routing
+
+**Hard routing rule:** apply `verification` to implementation changes to select evidence sufficient for the acceptance criteria and report actual coverage. Keep routine changes lightweight; do not require every test layer or review mode. Use specialized verification skills when their concerns are material.
+
 ## Visual verification routing
 
 **Conditional hard rule:** load `visual-verification` when acceptance criteria materially depend on actual rendered appearance or motion. This includes responsive layout, wrapping, clipping, alignment, layering, and design fidelity. Do not activate it merely because UI files changed; routine wording changes and nonvisual behavior do not require it.
 
 Reassess this condition when investigation reveals a visual failure or a visual acceptance criterion not apparent at initial routing. Keep the primary workflow and existing design routing intact. If runtime verification is unavailable, report affected criteria as unverified rather than treating static checks or mockups as equivalent evidence.
+
+## Planning routing
+
+Apply `agent-orchestration` when uncertainty, impact, irreversibility, or expected rework makes planning materially valuable, even for a single agent. Keep routine reversible work lightweight. Use `rubberduck` for explicit interactive reasoning requests, not as a mandatory planning phase.
+
+When substantial discussion or planning transitions to implementation, or a session/agent transfer would lose material context, apply `agent-orchestration` for pre-execution handoff. Reuse existing assignment artifacts; do not mandate a separate handoff for routine cohesive work with sufficient context.
 
 ## Execution topology
 

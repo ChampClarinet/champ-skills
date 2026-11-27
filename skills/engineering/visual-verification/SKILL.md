@@ -34,6 +34,6 @@ Avoid exposing credentials, personal data, or sensitive application content in a
 
 ## Composition
 
-This skill owns visual runtime verification, not visual design, implementation scope, general review, or RCA. Compose with relevant existing skills without duplicating their responsibilities. Supply actual evidence to review and post-mortem records when applicable.
+This skill owns visual runtime verification, not visual design, implementation scope, general review, or RCA. Compose with `verification` for general acceptance evidence and completion reporting, and with relevant existing skills without duplicating their responsibilities. Supply actual evidence to review and post-mortem records when applicable.
 
 Remain tool-agnostic across web, Flutter, and native applications. Do not install tooling, redesign UI, or expand scope solely to produce evidence without authorization.

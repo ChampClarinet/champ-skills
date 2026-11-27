@@ -9,7 +9,7 @@ Originally based on [`9arm-skills`](https://github.com/thananon/9arm-skills), th
 Skills live under `skills/`, grouped into categories:
 
 - `engineering/` — debugging, review, RCA, and engineering workflows
-- `design/` — landing-page strategy and existing-UI visual refinement
+- `design/` — landing pages, UI refinement, dashboards, and data visualization
 - `productivity/` — communication and workflow translation skills
 - `frameworks/` — framework-specific conventions and architecture guidance
 - `personal/` — personal engineering philosophies and decision-making heuristics
@@ -88,6 +88,10 @@ Or through a global `AGENTS.md` setup.
 
 For Codex automatic skill discovery, link the skills into `~/.agents/skills/` with `./scripts/link-skills.sh codex`. The router composes discovered skills; it does not replace their installation.
 
+## Agent behavior evaluations
+
+See [manual evaluation protocol](./evals/README.md) and [initial regression cases](./evals/cases.md) for checking skill and model behavior. These are not installed skills or automated runtime tests.
+
 ## Reference
 
 ### Design
@@ -100,22 +104,25 @@ For Codex automatic skill discovery, link the skills into `~/.agents/skills/` wi
 
 ### Engineering
 
-- **[visual-verification](./skills/engineering/visual-verification/SKILL.md)** — Verify actual rendered appearance when visual correctness is material to acceptance criteria.
-
+- **[visual-verification](./skills/engineering/visual-verification/SKILL.md)** — Verify rendered appearance when visual correctness matters to acceptance criteria.
+- [verification](skills/engineering/verification/SKILL.md) — Evidence-based acceptance verification and truthful completion.
 - **[skill-router](./skills/engineering/skill-router/SKILL.md)** — Compose relevant skills, resolve authority, and avoid redundant or conflicting instruction loads.
-- **[agent-orchestration](./skills/engineering/agent-orchestration/SKILL.md)** — Choose economically useful single- or multi-agent execution with durable state when continuation needs it.
+- **[agent-orchestration](./skills/engineering/agent-orchestration/SKILL.md)** — Scale planning to risk and choose an economical single- or multi-agent workflow, with bounded execution and escalation.
 - **[debug-mantra](./skills/engineering/debug-mantra/SKILL.md)** — Evidence-driven debugging: establish a failure signal, trace the path, falsify hypotheses, and verify the original signal after fixing.
 - **[post-mortem](./skills/engineering/post-mortem/SKILL.md)** — Engineering-focused root cause writeup: mechanism, fix, validation, and why it slipped through.
-- **[scope-discipline](./skills/engineering/scope-discipline/SKILL.md)** — Keep implementation bounded to the requested outcome and avoid unrelated changes.
+- **[scope-discipline](./skills/engineering/scope-discipline/SKILL.md)** — Keep changes within the requested outcome while allowing proportionate maintainability work.
 - **[ownership-boundaries](./skills/engineering/ownership-boundaries/SKILL.md)** — Keep state, side effects, data access, dependencies, and behavior at the narrowest meaningful owner.
 - **[tooling-feedback](./skills/engineering/tooling-feedback/SKILL.md)** — Treat actionable compiler, linter, language-server, and framework diagnostics on touched code as implementation feedback.
 - **[scrutinize](./skills/engineering/scrutinize/SKILL.md)** — End-to-end review of plans, PRs, and code changes with emphasis on simplicity, correctness, and real execution paths.
 - **[rubberduck](./skills/engineering/rubberduck/SKILL.md)** — Interactive reasoning mode that asks focused questions before touching code.
 - **[reviewer](./skills/engineering/reviewer/SKILL.md)** — Review-only mode for correctness, regression, maintainability, and scope issues.
-- **[minimalist](./skills/engineering/minimalist/SKILL.md)** — Prefer the smallest correct diff without adjacent cleanup or speculative abstraction.
+- **[minimalist](./skills/engineering/minimalist/SKILL.md)** — Prefer less code movement among equally correct and maintainable solutions.
 - **[skeptic](./skills/engineering/skeptic/SKILL.md)** — Treat proposed solutions as hypotheses and challenge assumptions with evidence.
 - **[archaeologist](./skills/engineering/archaeologist/SKILL.md)** — Investigate callers, history, contracts, and old constraints before changing legacy code.
 - **[paranoid](./skills/engineering/paranoid/SKILL.md)** — Aggressive pre-ship verification of edge cases, failure paths, races, compatibility, and test blind spots.
+
+- [bun-monorepo](skills/engineering/bun-monorepo/SKILL.md)
+- [git-workflow](skills/engineering/git-workflow/SKILL.md)
 
 ### Productivity
 
@@ -127,6 +134,22 @@ For Codex automatic skill discovery, link the skills into `~/.agents/skills/` wi
 
 - **[file-structure](./skills/frameworks/file-structure/SKILL.md)** — File organization rules for maintainable component and class structure.
 - **[react-component-ownership](./skills/frameworks/react-component-ownership/SKILL.md)** — Apply ownership-boundary principles to React state, effects, queries, dialogs, tabs, forms, and component composition.
+
+- [tailwind-discipline](skills/frameworks/css/tailwind-discipline/SKILL.md)
+- [elysiajs](skills/frameworks/elysiajs/SKILL.md)
+- [architecture](skills/frameworks/flutter/architecture/SKILL.md)
+- [routing-discipline](skills/frameworks/go-router/routing-discipline/SKILL.md)
+- [layout-system](skills/frameworks/layout-system/SKILL.md)
+- [motion-discipline](skills/frameworks/motion/motion-discipline/SKILL.md)
+- [app-router-discipline](skills/frameworks/next/app-router-discipline/SKILL.md)
+- [component-discipline](skills/frameworks/react/component-discipline/SKILL.md)
+- [form-discipline](skills/frameworks/react-hook-form/form-discipline/SKILL.md)
+- [state-discipline](skills/frameworks/redux-toolkit/state-discipline/SKILL.md)
+- [provider-discipline](skills/frameworks/riverpod/provider-discipline/SKILL.md)
+- [shadcn-ui](skills/frameworks/shadcn-ui/SKILL.md)
+- [app-discipline](skills/frameworks/tanstack-start/app-discipline/SKILL.md)
+- [type-discipline](skills/frameworks/typescript/type-discipline/SKILL.md)
+- [project-discipline](skills/frameworks/vite/project-discipline/SKILL.md)
 
 ### Personal
 

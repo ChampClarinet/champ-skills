@@ -5,7 +5,7 @@ description: Choose and coordinate single-agent or multi-agent execution for sub
 
 # Agent Orchestration
 
-**Conversation context is disposable. Repository state is durable.**
+**Conversation context is transient. Authoritative durable state enables continuity.**
 
 Choose the simplest execution topology whose expected benefit exceeds its coordination cost.
 
@@ -22,6 +22,16 @@ Delegate only for a concrete benefit such as:
 Account for spawn, reread, handoff, coordination, shared-file contention, and integration cost.
 
 A cohesive task should stay single-core when splitting it would not pay for itself. Do not create fixed Analyst → Builder → Tester → Reviewer ceremonies.
+
+## Risk-based planning
+
+Scale planning effort to the expected cost of being wrong: uncertainty, impact, reversibility, and rework cost. Do not use file count or line count as a proxy, or invent numerical risk estimates.
+
+- For clear, low-risk, reversible work, proceed with a lightweight internal plan; no separate approval or plan artifact is required.
+- For non-trivial work, communicate a concise plan covering intended outcome, material assumptions, affected boundaries, and verification.
+- Investigate uncertain assumptions before proposing consequential changes. Seek human review of material unresolved decisions, high-impact or difficult-to-reverse changes before implementation, unless explicitly authorized.
+- Reassess the plan when evidence invalidates a material assumption or changes risk, scope, or acceptance criteria. Escalate consequential changes rather than silently proceeding.
+- Keep planning proportional; use durable plan artifacts only when continuation or coordination benefits.
 
 ## Bounded execution
 
@@ -55,6 +65,17 @@ Before parallel implementation:
 
 Parallelize only when inputs are sufficiently stable and agents will not race on the same state.
 
+## Context lifecycle
+
+Discover relevant context, not all available context. Start with the task, repository instructions, and known authoritative references; expand only when a material assumption, dependency, or decision requires it. Do not search every connected system by default.
+
+- Distinguish approved intent, observed implementation, historical rationale, and reported progress. Use the source authoritative for the specific claim; current code does not automatically override approved requirements.
+- Prefer direct source evidence over copied summaries. Check relevant revision, status, scope, or superseding decisions when freshness matters. Do not treat a recent timestamp alone as authority.
+- Reconcile material discrepancies before consequential action. If the authoritative source is unavailable or a conflict remains unresolved, state the limitation and seek human clarification when needed.
+- On handoff or resumption, revalidate material assumptions and dependencies against current source state. Replan when they have changed; do not blindly replay stale plans or redo verified work.
+- Preserve approved decisions, changed contracts, evidence, and resumable state in the appropriate existing authoritative location when authorized. Update affected records within scope; otherwise report the required reconciliation. Link to authoritative sources rather than duplicating their contents.
+- Do not create parallel sources of truth, silently modify external trackers or approved requirements, or persist sensitive session data. Keep discovery and persistence proportional to the task.
+
 ## Durable state
 
 Use durable repository state when continuation or cross-agent coordination benefits from it. Do not create process files merely because the template exists.
@@ -83,6 +104,22 @@ Delegated work that another agent must consume requires a durable handoff. Tiny 
 
 After the task, treat `.agents/run/` as ephemeral working state. Promote decisions or findings with long-term value into permanent documentation, ADRs, post-mortems, tests, or other appropriate artifacts rather than preserving a graveyard of coordination files.
 
+## Pre-execution handoff
+
+Before implementation begins, capture a durable assignment when substantial discussion, research, or planning has established material context, or when work transfers to another session or agent and that context would otherwise be lost. This includes human-to-agent handoffs. Routine cohesive work with sufficient context needs no separate artifact.
+
+Use the existing assignment.md convention under .agents/run/ or the repository's established equivalent. Reuse an existing assignment rather than duplicating it. Record:
+
+- objective and relevant context with authoritative references
+- approved decisions and material rationale
+- scope, constraints, and decision authority
+- observable acceptance criteria and verification expectations
+- unresolved questions, assumptions, and blockers
+
+Distinguish approved decisions from proposals. Do not invent approval, copy whole conversations, or relocate authoritative external records. Include only the context needed for execution.
+
+The receiving agent must read the assignment, validate material assumptions against current authoritative sources, and resolve consequential uncertainties before implementation. Do not repeat settled discussion without new evidence. If the sender cannot write to the repository, provide a portable Markdown handoff and explicitly identify where it should be saved; do not claim it was persisted.
+
 ## Handoff discipline
 
 Handoffs are not transcripts and must not contain hidden reasoning or chain-of-thought.
@@ -110,7 +147,7 @@ A fresh lead should be able to resume substantial work from repository instructi
 When resuming:
 
 1. read repository instructions and active assignment/state
-2. inspect relevant handoffs and Git/source to verify the checkpoint
+2. inspect relevant handoffs and current authoritative sources to verify the checkpoint and material assumptions
 3. continue the recorded next action
 4. do not redo completed phases solely because conversation context is gone
 

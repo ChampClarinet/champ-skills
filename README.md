@@ -9,7 +9,7 @@ Originally based on [`9arm-skills`](https://github.com/thananon/9arm-skills), th
 Skills live under `skills/`, grouped into categories:
 
 - `engineering/` — debugging, review, RCA, and engineering workflows
-- `design/` — landing-page strategy and existing-UI visual refinement
+- `design/` — landing pages, UI refinement, dashboards, and data visualization
 - `productivity/` — communication and workflow translation skills
 - `frameworks/` — framework-specific conventions and architecture guidance
 - `personal/` — personal engineering philosophies and decision-making heuristics
@@ -100,19 +100,18 @@ For Codex automatic skill discovery, link the skills into `~/.agents/skills/` wi
 
 ### Engineering
 
-- **[visual-verification](./skills/engineering/visual-verification/SKILL.md)** — Verify actual rendered appearance when visual correctness is material to acceptance criteria.
-
+- **[visual-verification](./skills/engineering/visual-verification/SKILL.md)** — Verify rendered appearance when visual correctness matters to acceptance criteria.
 - **[skill-router](./skills/engineering/skill-router/SKILL.md)** — Compose relevant skills, resolve authority, and avoid redundant or conflicting instruction loads.
-- **[agent-orchestration](./skills/engineering/agent-orchestration/SKILL.md)** — Choose economically useful single- or multi-agent execution with durable state when continuation needs it.
+- **[agent-orchestration](./skills/engineering/agent-orchestration/SKILL.md)** — Scale planning to risk and choose an economical single- or multi-agent workflow, with bounded execution and escalation.
 - **[debug-mantra](./skills/engineering/debug-mantra/SKILL.md)** — Evidence-driven debugging: establish a failure signal, trace the path, falsify hypotheses, and verify the original signal after fixing.
 - **[post-mortem](./skills/engineering/post-mortem/SKILL.md)** — Engineering-focused root cause writeup: mechanism, fix, validation, and why it slipped through.
-- **[scope-discipline](./skills/engineering/scope-discipline/SKILL.md)** — Keep implementation bounded to the requested outcome and avoid unrelated changes.
+- **[scope-discipline](./skills/engineering/scope-discipline/SKILL.md)** — Keep changes within the requested outcome while allowing proportionate maintainability work.
 - **[ownership-boundaries](./skills/engineering/ownership-boundaries/SKILL.md)** — Keep state, side effects, data access, dependencies, and behavior at the narrowest meaningful owner.
 - **[tooling-feedback](./skills/engineering/tooling-feedback/SKILL.md)** — Treat actionable compiler, linter, language-server, and framework diagnostics on touched code as implementation feedback.
 - **[scrutinize](./skills/engineering/scrutinize/SKILL.md)** — End-to-end review of plans, PRs, and code changes with emphasis on simplicity, correctness, and real execution paths.
 - **[rubberduck](./skills/engineering/rubberduck/SKILL.md)** — Interactive reasoning mode that asks focused questions before touching code.
 - **[reviewer](./skills/engineering/reviewer/SKILL.md)** — Review-only mode for correctness, regression, maintainability, and scope issues.
-- **[minimalist](./skills/engineering/minimalist/SKILL.md)** — Prefer the smallest correct diff without adjacent cleanup or speculative abstraction.
+- **[minimalist](./skills/engineering/minimalist/SKILL.md)** — Prefer less code movement among equally correct and maintainable solutions.
 - **[skeptic](./skills/engineering/skeptic/SKILL.md)** — Treat proposed solutions as hypotheses and challenge assumptions with evidence.
 - **[archaeologist](./skills/engineering/archaeologist/SKILL.md)** — Investigate callers, history, contracts, and old constraints before changing legacy code.
 - **[paranoid](./skills/engineering/paranoid/SKILL.md)** — Aggressive pre-ship verification of edge cases, failure paths, races, compatibility, and test blind spots.

@@ -35,6 +35,7 @@ Add optional stance or philosophy skills only when they improve the task. Do not
 Prefer one canonical owner for each concern:
 
 - scope: `scope-discipline`
+- acceptance evidence and verification sufficiency: `verification`
 - behavioral ownership: `ownership-boundaries`
 - physical component/file policy: `file-structure`
 - debugging evidence discipline: `debug-mantra`
@@ -88,6 +89,10 @@ When active skills appear to disagree:
 5. For a meaningful unresolved decision, ask the user.
 
 Do not let a framework adapter silently override a repository rule or a champ hard policy.
+
+## General verification routing
+
+**Hard routing rule:** apply `verification` to implementation changes to select evidence sufficient for the acceptance criteria and report actual coverage. Keep routine changes lightweight; do not require every test layer or review mode. Use specialized verification skills when their concerns are material.
 
 ## Visual verification routing
 

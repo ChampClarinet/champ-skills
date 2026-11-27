@@ -54,7 +54,7 @@ Examples include:
 
 Keep supporting work as narrow as possible. Do not let it cascade into unrelated cleanup.
 
-Validation is part of the requested change. Run the narrowest relevant checks first and broaden only when the change surface or repository workflow requires it.
+Validation is part of the requested change. Run the narrowest sufficient checks first and broaden when acceptance evidence, regression risk, or repository workflow requires it. Use `verification` to determine evidence sufficiency; passing a narrower check does not establish an untested acceptance criterion.
 
 ## Out-of-scope work
 

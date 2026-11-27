@@ -89,6 +89,12 @@ When active skills appear to disagree:
 
 Do not let a framework adapter silently override a repository rule or a champ hard policy.
 
+## Visual verification routing
+
+**Conditional hard rule:** load `visual-verification` when acceptance criteria materially depend on actual rendered appearance or motion. This includes responsive layout, wrapping, clipping, alignment, layering, and design fidelity. Do not activate it merely because UI files changed; routine wording changes and nonvisual behavior do not require it.
+
+Reassess this condition when investigation reveals a visual failure or a visual acceptance criterion not apparent at initial routing. Keep the primary workflow and existing design routing intact. If runtime verification is unavailable, report affected criteria as unverified rather than treating static checks or mockups as equivalent evidence.
+
 ## Execution topology
 
 Domain skills may identify separable, parallelizable, or independently verifiable work. They do not prescribe agent counts or fixed roles.

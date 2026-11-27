@@ -1,6 +1,6 @@
 ---
 name: post-mortem
-description: Write the canonical engineering record of a validated bug fix: symptom, root-cause mechanism, fix, validation, escape path, and durable lessons. Use after debugging when the fix and cause are established, or when the user asks for an RCA or engineering write-up.
+description: "Write the canonical engineering record of a validated bug fix: symptom, root-cause mechanism, fix, validation, escape path, and durable lessons. Use after debugging when the fix and cause are established, or when the user asks for an RCA or engineering write-up."
 ---
 
 # Post-mortem

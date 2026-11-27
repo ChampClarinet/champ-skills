@@ -101,6 +101,7 @@ For Codex automatic skill discovery, link the skills into `~/.agents/skills/` wi
 ### Engineering
 
 - **[visual-verification](./skills/engineering/visual-verification/SKILL.md)** — Verify rendered appearance when visual correctness matters to acceptance criteria.
+- [verification](skills/engineering/verification/SKILL.md) — Evidence-based acceptance verification and truthful completion.
 - **[skill-router](./skills/engineering/skill-router/SKILL.md)** — Compose relevant skills, resolve authority, and avoid redundant or conflicting instruction loads.
 - **[agent-orchestration](./skills/engineering/agent-orchestration/SKILL.md)** — Scale planning to risk and choose an economical single- or multi-agent workflow, with bounded execution and escalation.
 - **[debug-mantra](./skills/engineering/debug-mantra/SKILL.md)** — Evidence-driven debugging: establish a failure signal, trace the path, falsify hypotheses, and verify the original signal after fixing.

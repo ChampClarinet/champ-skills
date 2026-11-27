@@ -5,7 +5,7 @@ description: Choose and coordinate single-agent or multi-agent execution for sub
 
 # Agent Orchestration
 
-**Conversation context is disposable. Repository state is durable.**
+**Conversation context is transient. Authoritative durable state enables continuity.**
 
 Choose the simplest execution topology whose expected benefit exceeds its coordination cost.
 
@@ -65,6 +65,17 @@ Before parallel implementation:
 
 Parallelize only when inputs are sufficiently stable and agents will not race on the same state.
 
+## Context lifecycle
+
+Discover relevant context, not all available context. Start with the task, repository instructions, and known authoritative references; expand only when a material assumption, dependency, or decision requires it. Do not search every connected system by default.
+
+- Distinguish approved intent, observed implementation, historical rationale, and reported progress. Use the source authoritative for the specific claim; current code does not automatically override approved requirements.
+- Prefer direct source evidence over copied summaries. Check relevant revision, status, scope, or superseding decisions when freshness matters. Do not treat a recent timestamp alone as authority.
+- Reconcile material discrepancies before consequential action. If the authoritative source is unavailable or a conflict remains unresolved, state the limitation and seek human clarification when needed.
+- On handoff or resumption, revalidate material assumptions and dependencies against current source state. Replan when they have changed; do not blindly replay stale plans or redo verified work.
+- Preserve approved decisions, changed contracts, evidence, and resumable state in the appropriate existing authoritative location when authorized. Update affected records within scope; otherwise report the required reconciliation. Link to authoritative sources rather than duplicating their contents.
+- Do not create parallel sources of truth, silently modify external trackers or approved requirements, or persist sensitive session data. Keep discovery and persistence proportional to the task.
+
 ## Durable state
 
 Use durable repository state when continuation or cross-agent coordination benefits from it. Do not create process files merely because the template exists.
@@ -120,7 +131,7 @@ A fresh lead should be able to resume substantial work from repository instructi
 When resuming:
 
 1. read repository instructions and active assignment/state
-2. inspect relevant handoffs and Git/source to verify the checkpoint
+2. inspect relevant handoffs and current authoritative sources to verify the checkpoint and material assumptions
 3. continue the recorded next action
 4. do not redo completed phases solely because conversation context is gone
 

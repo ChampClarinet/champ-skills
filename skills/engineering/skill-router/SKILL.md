@@ -22,6 +22,12 @@ Repository-local explicit policy overrides champ-skills because the active repos
 
 When two instructions at the same authority level materially conflict and neither can safely satisfy both, surface the conflict, consequences, and options to the user rather than silently choosing.
 
+## Context authority
+
+The instruction hierarchy above governs what the agent may and should do, not which factual claim is true. Distinguish approved requirements (intended behavior), source and runtime evidence (actual behavior), decision records (rationale), and verified task state (progress). A discrepancy is evidence to investigate, not permission to silently overwrite either source.
+
+Use agent-orchestration for context lifecycle when cross-source dependencies, handoffs, stale state, or material conflicting facts affect execution. For routine work, consult only the relevant authoritative sources. Respect access and change boundaries; do not require broad connector searches or external record updates by default.
+
 ## Composition
 
 Load the minimum useful skill set.
@@ -39,7 +45,7 @@ Prefer one canonical owner for each concern:
 - behavioral ownership: `ownership-boundaries`
 - physical component/file policy: `file-structure`
 - debugging evidence discipline: `debug-mantra`
-- execution topology and delegation: `agent-orchestration`
+- execution topology, delegation, and context lifecycle: `agent-orchestration`
 - actionable touched-surface diagnostics: `tooling-feedback`
 - Git/commit discipline: `git-workflow`
 

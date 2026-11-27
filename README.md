@@ -117,6 +117,8 @@ For Codex automatic skill discovery, link the skills into `~/.agents/skills/` wi
 
 ### Productivity
 
+- **[show-me](./skills/productivity/show-me/SKILL.md)** — Explain complex requirements, plans, and changes with the smallest effective visual representation.
+
 - **[management-talk](./skills/productivity/management-talk/SKILL.md)** — Rewrite engineering content for leadership, stakeholders, or cross-functional communication while preserving technical accuracy.
 
 ### Frameworks

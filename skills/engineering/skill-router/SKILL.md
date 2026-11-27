@@ -61,6 +61,22 @@ For any repo modification, retain `scope-discipline`. Existing project tokens, c
 
 **Discovery caveat:** The always-load rule is enforced only when the agent has discovered and activated this router. Codex can select the new skills automatically only when their `SKILL.md` files are installed in a discoverable skills directory. A router file alone does not install or globally activate them.
 
+## Communication routing
+
+Use `show-me` as a supplementary communication skill, not a design owner or primary implementation workflow.
+
+- Honor explicit requests to use `show-me` within platform and repository constraints.
+- Automatically load it when a visual representation materially improves understanding of a complex plan, UI proposal, architecture change, runtime flow, or before/after comparison.
+- Consider it when visual input needs interpretation or when the user must resolve a consequential design or engineering choice.
+- Skip it for routine changes or when concise prose is equally effective. Do not mandate HTML or visual artifacts.
+- Keep visual design routing independent. Show Me does not satisfy the required design skill rule and does not replace runtime verification.
+
+## Late skill activation
+
+Reassess the active skill set when investigation reveals a materially different concern or complexity. Load the minimum useful supplementary skill at that point, even if it was not selected initially. Preserve the primary workflow and authority order.
+
+Reuse instructions already present in context; avoid duplicate loads and recursive routing cycles. Track active skills and their concern owners. Do not claim a skill was loaded if discovery or access failed; report consequential limitations.
+
 ## Conflict handling
 
 When active skills appear to disagree:
@@ -83,7 +99,7 @@ Use `agent-orchestration` when delegation could materially improve parallelism, 
 
 Before finishing non-trivial work, verify that:
 
-- active skills cover the actual concerns and no irrelevant skill drove scope
+- active skills cover the actual concerns, including material concerns discovered after initial routing, and no irrelevant skill drove scope
 - repository-local rules won over conflicting personal defaults
 - each concern has one canonical policy owner
 - optional guidance did not override hard constraints

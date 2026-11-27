@@ -43,7 +43,7 @@ Ground the decision in actual requirements, conflicting ownership, duplicated in
 
 ## In-scope supporting work
 
-A supporting change is in scope when the requested outcome cannot be implemented or validated safely without it.
+A supporting change is in scope when required for safe implementation or validation, or when proportionate refactoring is justified by the Maintainability within scope policy.
 
 Examples include:
 
